@@ -1,0 +1,118 @@
+Name: slurp left lisp
+Code: (lambda () (call-interactively #'slurpbarf-slurp-backward))
+Point-Char: |
+=-=
+(foo (bar | baz))
+=-=
+((foo bar | baz))
+=-=-=
+
+Name: slurp right lisp
+Code: (lambda () (call-interactively #'slurpbarf-slurp-forward))
+=-=
+((foo | bar) baz)
+=-=
+((foo | bar baz))
+=-=-=
+
+Name: barf left lisp
+Code: (lambda () (call-interactively #'slurpbarf-barf-backward))
+=-=
+((foo bar | baz))
+=-=
+(foo (bar | baz))
+=-=-=
+
+Name: barf right lisp
+Code: (lambda () (call-interactively #'slurpbarf-barf-forward))
+=-=
+((foo | bar baz))
+=-=
+((foo | bar) baz)
+=-=-=
+
+Name: splice lisp
+Code: (lambda () (call-interactively #'slurpbarf-splice))
+=-=
+((foo | bar))
+=-=
+(foo | bar)
+=-=-=
+
+Name: slurp left xml
+Code: (lambda () (nxml-mode) (electric-indent-local-mode +1) (call-interactively #'slurpbarf-slurp-backward))
+=-=
+<a>
+  foo
+  <b>|
+  </b>
+</a>
+=-=
+<a>
+  <b>|
+    foo
+  </b>
+</a>
+=-=-=
+
+Name: slurp right xml
+Code: (lambda () (nxml-mode) (electric-indent-local-mode +1) (call-interactively #'slurpbarf-slurp-forward))
+=-=
+<a>
+  <b>|
+  </b>
+  foo
+</a>
+=-=
+<a>
+  <b>|
+    foo
+  </b>
+</a>
+=-=-=
+
+Name: barf left xml
+Code: (lambda () (nxml-mode) (electric-indent-local-mode +1) (call-interactively #'slurpbarf-barf-backward))
+=-=
+<a>
+  <b>|
+    foo
+  </b>
+</a>
+=-=
+<a>
+  foo
+  <b>|
+  </b>
+</a>
+=-=-=
+
+Name: barf right xml
+Code: (lambda () (nxml-mode) (electric-indent-local-mode +1) (call-interactively #'slurpbarf-barf-forward))
+=-=
+<a>
+  <b>|
+    foo
+  </b>
+</a>
+=-=
+<a>
+  <b>|
+  </b>
+  foo
+</a>
+=-=-=
+
+Name: splice xml
+Code: (lambda () (nxml-mode) (electric-indent-local-mode +1) (call-interactively #'slurpbarf-splice))
+=-=
+<a>
+  <b>|
+    foo
+  </b>
+</a>
+=-=
+<a>
+  |foo
+</a>
+=-=-=

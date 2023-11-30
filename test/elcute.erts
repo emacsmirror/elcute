@@ -1,0 +1,76 @@
+Name: kill forward lisp
+Code: (lambda () (call-interactively #'elcute-kill-line))
+Point-Char: |
+=-=
+(foo | (bar
+	baz))
+=-=
+(foo |)
+=-=-=
+
+Name: kill backward lisp
+Code: (lambda () (elcute-kill-line 0))
+=-=
+(foo (bar
+      baz) |)
+=-=
+(foo |)
+=-=-=
+
+Name: kill string forward lisp
+Code: (lambda () (call-interactively #'elcute-kill-line))
+=-=
+"foo | bar"
+=-=
+"foo |"
+=-=-=
+
+Name: kill string backward lisp
+Code: (lambda () (elcute-kill-line 0))
+=-=
+"foo | bar"
+=-=
+"| bar"
+=-=-=
+
+Name: kill forward xml
+Code: (lambda () (nxml-mode) (call-interactively #'elcute-kill-line))
+=-=
+<a>
+  |<b>
+  </b>
+</a>
+=-=
+<a>
+  |
+</a>
+=-=-=
+
+Name: kill backward xml
+Code: (lambda () (nxml-mode) (elcute-kill-line 0))
+=-=
+<a>
+  <b>
+  </b>|
+</a>
+=-=
+<a>
+  |
+</a>
+=-=-=
+
+Name: kill string forward xml
+Code: (lambda () (nxml-mode) (call-interactively #'elcute-kill-line))
+=-=
+<a x="foo | bar"/>
+=-=
+<a x="foo |"/>
+=-=-=
+
+Name: kill string backward xml
+Code: (lambda () (nxml-mode) (elcute-kill-line 0))
+=-=
+<a x="foo | bar"/>
+=-=
+<a x="| bar"/>
+=-=-=
