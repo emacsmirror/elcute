@@ -237,10 +237,10 @@ With negative ARG, kills tentatively -ARG lines backward,
 till beginning of line."
   (interactive "P")
   (save-excursion
-   (let ((origin (point)))
-     (elcute-forward-line arg)
-     (elcute--skip-indentation arg)
-     (kill-region origin (point))))
+    (let ((origin (point)))
+      (elcute-forward-line arg)
+      (elcute--skip-indentation arg)
+      (kill-region origin (point))))
   (elcute--indent))
 
 (provide 'elcute)

@@ -157,11 +157,11 @@ With negative argument, move forward."
 (defun slurpbarf--insert (string)
   (slurpbarf--unindent (point))
   (save-excursion
-   (let ((origin (point)))
-     (insert string)
-     (slurpbarf--insert-space)
-     (goto-char origin)
-     (slurpbarf--insert-space))))
+    (let ((origin (point)))
+      (insert string)
+      (slurpbarf--insert-space)
+      (goto-char origin)
+      (slurpbarf--insert-space))))
 
 (defun slurpbarf--extract-region (beg end)
   (let ((beg (min beg end))
