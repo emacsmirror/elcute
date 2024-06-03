@@ -71,43 +71,51 @@ prevent words or symbols from conjoining.")
 (defvar slurpbarf-forward-function #'forward-sexp
   "Specifies the method of moving forward expressions laterally.")
 
-(defun slurpbarf-up-function (arg)
+(defun slurpbarf-up-function (arg &optional interactive)
   "Go up |ARG| levels of expression hierarchy.
-With positive argument, move forward; with negative, backward."
-  (interactive "p")
-  (funcall slurpbarf-up-function arg))
+With positive argument, move forward; with negative, backward.
+If INTERACTIVE is non-nil, as it is interactively, report errors
+as appropriate for this kind of usage."
+  (interactive "p\nd")
+  (funcall slurpbarf-up-function arg interactive))
 
-(defun slurpbarf-down-function (arg)
+(defun slurpbarf-down-function (arg &optional interactive)
   "Go down |ARG| levels of expression hierarchy.
-With positive argument, move forward; with negative, backward."
-  (interactive "p")
-  (funcall slurpbarf-down-function arg))
+With positive argument, move forward; with negative, backward.
+If INTERACTIVE is non-nil, as it is interactively, report errors
+as appropriate for this kind of usage."
+  (interactive "p\nd")
+  (funcall slurpbarf-down-function arg interactive))
 
-(defun slurpbarf-forward-function (arg)
+(defun slurpbarf-forward-function (arg &optional interactive)
   "Move forward ARG expressions.
-With negative argument, move backward."
-  (interactive "p")
-  (funcall slurpbarf-forward-function arg))
+With negative argument, move backward.  If INTERACTIVE is
+non-nil, as it is interactively, report errors as appropriate for
+this kind of usage."
+  (interactive "p\nd")
+  (funcall slurpbarf-forward-function arg interactive))
 
-(defun slurpbarf-backward-function (arg)
+(defun slurpbarf-backward-function (arg &optional interactive)
   "Move backward ARG expressions.
-With negative argument, move forward."
-  (interactive "p")
-  (slurpbarf-forward-function (- arg)))
+With negative argument, move forward.  If INTERACTIVE is non-nil,
+as it is interactively, report errors as appropriate for this
+kind of usage."
+  (interactive "p\nd")
+  (slurpbarf-forward-function (- arg) interactive))
 
 (defun slurpbarf--skip-blanks-and-newline ()
   (skip-chars-forward "[:blank:]")
   (skip-chars-forward "\n" (1+ (point))))
 
-(defun slurpbarf--nxml-up (n)
+(defun slurpbarf--nxml-up (n interactive)
   (nxml-up-element n)
   (slurpbarf--skip-blanks-and-newline))
 
-(defun slurpbarf--nxml-down (n)
+(defun slurpbarf--nxml-down (n interactive)
   (nxml-down-element n)
   (slurpbarf--skip-blanks-and-newline))
 
-(defun slurpbarf--nxml-forward (n)
+(defun slurpbarf--nxml-forward (n interactive)
   (nxml-forward-balanced-item n)
   (slurpbarf--skip-blanks-and-newline))
 
@@ -176,55 +184,63 @@ With negative argument, move forward."
   (when slurpbarf-skip-comments-flag
     (forward-comment (* sign (buffer-size)))))
 
-(defun slurpbarf-slurp-forward (arg)
+(defun slurpbarf-slurp-forward (arg &optional interactive)
   "Slurp or ingest forward ARG expressions.
-With negative argument, slurp backward."
-  (interactive "p")
+With negative argument, slurp backward.  If INTERACTIVE is
+non-nil, as it is interactively, report errors as appropriate for
+this kind of usage."
+  (interactive "p\nd")
   (let ((sign (cl-signum arg)))
     (save-excursion
-      (slurpbarf-up-function sign)
+      (slurpbarf-up-function sign interactive)
       (let ((origin (point))
 	    (offset
 	     (- (slurpbarf--excurse
 		 (lambda () (slurpbarf-down-function (- sign))))
 		(point))))
-	(slurpbarf-forward-function arg)
+	(slurpbarf-forward-function arg interactive)
 	(let ((substring (slurpbarf--extract-region origin (point))))
 	  (forward-char offset)
 	  (slurpbarf--insert substring)))))
   (slurpbarf--indent 2))
 
-(defun slurpbarf-slurp-backward (arg)
+(defun slurpbarf-slurp-backward (arg &optional interactive)
   "Slurp or ingest backward ARG expressions.
-With negative argument, slurp forward."
-  (interactive "p")
-  (slurpbarf-slurp-forward (- arg)))
+With negative argument, slurp forward.  If INTERACTIVE is
+non-nil, as it is interactively, report errors as appropriate for
+this kind of usage."
+  (interactive "p\nd")
+  (slurpbarf-slurp-forward (- arg) interactive))
 
-(defun slurpbarf-barf-forward (arg)
+(defun slurpbarf-barf-forward (arg &optional interactive)
   "Barf or emit forward ARG expressions.
-With negative argument, barf backward."
-  (interactive "p")
+With negative argument, barf backward.  If INTERACTIVE is
+non-nil, as it is interactively, report errors as appropriate for
+this kind of usage."
+  (interactive "p\nd")
   (let ((sign (cl-signum arg)))
     (save-excursion
-      (slurpbarf-up-function sign)
+      (slurpbarf-up-function sign interactive)
       (let ((offset
 	     (- (slurpbarf--excurse
 		 (lambda () (slurpbarf-down-function (- sign))))
 		(point))))
 	(forward-char offset)
 	(let ((origin (point)))
-	  (slurpbarf-forward-function (- arg))
+	  (slurpbarf-forward-function (- arg) interactive)
 	  (slurpbarf--skip-comments (- sign))
 	  (let ((substring (slurpbarf--extract-region origin (point))))
 	    (backward-char offset)
 	    (slurpbarf--insert substring))))))
   (slurpbarf--indent 2))
 
-(defun slurpbarf-barf-backward (arg)
+(defun slurpbarf-barf-backward (arg &optional interactive)
   "Barf or emit backward ARG expressions.
-With negative argument, barf forward."
-  (interactive "p")
-  (slurpbarf-barf-forward (- arg)))
+With negative argument, barf forward.  If INTERACTIVE is non-nil,
+as it is interactively, report errors as appropriate for this
+kind of usage."
+  (interactive "p\nd")
+  (slurpbarf-barf-forward (- arg) interactive))
 
 (defun slurpbarf-splice ()
   (interactive)
