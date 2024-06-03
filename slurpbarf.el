@@ -71,7 +71,7 @@ prevent words or symbols from conjoining.")
 (defvar slurpbarf-forward-function #'forward-sexp
   "Specifies the method of moving forward expressions laterally.")
 
-(defun slurpbarf-up-function (arg &optional interactive)
+(defun slurpbarf-up-function (&optional arg interactive)
   "Go up |ARG| levels of expression hierarchy.
 With positive argument, move forward; with negative, backward.
 If INTERACTIVE is non-nil, as it is interactively, report errors
@@ -79,7 +79,7 @@ as appropriate for this kind of usage."
   (interactive "p\nd")
   (funcall slurpbarf-up-function arg interactive))
 
-(defun slurpbarf-down-function (arg &optional interactive)
+(defun slurpbarf-down-function (&optional arg interactive)
   "Go down |ARG| levels of expression hierarchy.
 With positive argument, move forward; with negative, backward.
 If INTERACTIVE is non-nil, as it is interactively, report errors
@@ -87,7 +87,7 @@ as appropriate for this kind of usage."
   (interactive "p\nd")
   (funcall slurpbarf-down-function arg interactive))
 
-(defun slurpbarf-forward-function (arg &optional interactive)
+(defun slurpbarf-forward-function (&optional arg interactive)
   "Move forward ARG expressions.
 With negative argument, move backward.  If INTERACTIVE is
 non-nil, as it is interactively, report errors as appropriate for
@@ -95,7 +95,7 @@ this kind of usage."
   (interactive "p\nd")
   (funcall slurpbarf-forward-function arg interactive))
 
-(defun slurpbarf-backward-function (arg &optional interactive)
+(defun slurpbarf-backward-function (&optional arg interactive)
   "Move backward ARG expressions.
 With negative argument, move forward.  If INTERACTIVE is non-nil,
 as it is interactively, report errors as appropriate for this
@@ -107,35 +107,33 @@ kind of usage."
   (skip-chars-forward "[:blank:]")
   (skip-chars-forward "\n" (1+ (point))))
 
-(defun slurpbarf--nxml-condition-case (interactive thunk)
+(defmacro slurpbarf--nxml-condition-case (interactive &rest body)
   (declare (indent 1))
-  (if interactive
-      (condition-case err (funcall thunk)
-	(error (signal 'user-error (cdr err))))
-    (funcall thunk)))
+  `(if ,interactive
+       (condition-case err (progn ,@body)
+	 (error (signal 'user-error (cdr err))))
+     (progn ,@body)))
 
 (defun slurpbarf--nxml-up (n interactive)
   (slurpbarf--nxml-condition-case interactive
-    (lambda ()
-      (nxml-up-element n)))
+    (nxml-up-element n))
   (slurpbarf--skip-blanks-and-newline))
 
 (defun slurpbarf--nxml-down (n interactive)
   (slurpbarf--nxml-condition-case interactive
-    (lambda ()
-      (nxml-down-element n)))
+    (nxml-down-element n))
   (slurpbarf--skip-blanks-and-newline))
 
 (defun slurpbarf--nxml-forward (n interactive)
   (slurpbarf--nxml-condition-case interactive
-    (lambda ()
-      (nxml-forward-balanced-item n)))
+    (nxml-forward-balanced-item n))
   (slurpbarf--skip-blanks-and-newline))
 
-(defun slurpbarf--excurse (function)
-  (save-excursion
-    (funcall function)
-    (point)))
+(defmacro slurpbarf--excurse (&rest body)
+  (declare (indent 0))
+  `(save-excursion
+     ,@body
+     (point)))
 
 (defun slurpbarf--indent-p ()
   (and electric-indent-mode
@@ -146,10 +144,9 @@ kind of usage."
     (cl-labels
 	((excurse (n extreme)
 	   (slurpbarf--excurse
-	    (lambda ()
-	      (condition-case nil
-		  (slurpbarf-up-function n)
-		(error (goto-char (funcall extreme))))))))
+	     (condition-case nil
+		 (slurpbarf-up-function n)
+	       (error (goto-char (funcall extreme)))))))
       (let ((left (excurse (- n) #'point-min))
 	    (right (excurse n #'point-max)))
 	(indent-region left right)))))
@@ -197,7 +194,7 @@ kind of usage."
   (when slurpbarf-skip-comments-flag
     (forward-comment (* sign (buffer-size)))))
 
-(defun slurpbarf-slurp-forward (arg &optional interactive)
+(defun slurpbarf-slurp-forward (&optional arg interactive)
   "Slurp or ingest forward ARG expressions.
 With negative argument, slurp backward.  If INTERACTIVE is
 non-nil, as it is interactively, report errors as appropriate for
@@ -209,7 +206,7 @@ this kind of usage."
       (let ((origin (point))
 	    (offset
 	     (- (slurpbarf--excurse
-		 (lambda () (slurpbarf-down-function (- sign))))
+		  (slurpbarf-down-function (- sign)))
 		(point))))
 	(slurpbarf-forward-function arg interactive)
 	(let ((substring (slurpbarf--extract-region origin (point))))
@@ -217,7 +214,7 @@ this kind of usage."
 	  (slurpbarf--insert substring)))))
   (slurpbarf--indent 2))
 
-(defun slurpbarf-slurp-backward (arg &optional interactive)
+(defun slurpbarf-slurp-backward (&optional arg interactive)
   "Slurp or ingest backward ARG expressions.
 With negative argument, slurp forward.  If INTERACTIVE is
 non-nil, as it is interactively, report errors as appropriate for
@@ -225,7 +222,7 @@ this kind of usage."
   (interactive "p\nd")
   (slurpbarf-slurp-forward (- arg) interactive))
 
-(defun slurpbarf-barf-forward (arg &optional interactive)
+(defun slurpbarf-barf-forward (&optional arg interactive)
   "Barf or emit forward ARG expressions.
 With negative argument, barf backward.  If INTERACTIVE is
 non-nil, as it is interactively, report errors as appropriate for
@@ -236,7 +233,7 @@ this kind of usage."
       (slurpbarf-up-function sign interactive)
       (let ((offset
 	     (- (slurpbarf--excurse
-		 (lambda () (slurpbarf-down-function (- sign))))
+		  (slurpbarf-down-function (- sign)))
 		(point))))
 	(forward-char offset)
 	(let ((origin (point)))
@@ -247,7 +244,7 @@ this kind of usage."
 	    (slurpbarf--insert substring))))))
   (slurpbarf--indent 2))
 
-(defun slurpbarf-barf-backward (arg &optional interactive)
+(defun slurpbarf-barf-backward (&optional arg interactive)
   "Barf or emit backward ARG expressions.
 With negative argument, barf forward.  If INTERACTIVE is non-nil,
 as it is interactively, report errors as appropriate for this
@@ -258,13 +255,13 @@ kind of usage."
 (defun slurpbarf-splice ()
   (interactive)
   (save-excursion
-    (let ((out0 (slurpbarf--excurse (lambda () (slurpbarf-up-function -1))))
-	  (out1 (slurpbarf--excurse (lambda () (slurpbarf-up-function +1))))
+    (let ((out0 (slurpbarf--excurse (slurpbarf-up-function -1)))
+	  (out1 (slurpbarf--excurse (slurpbarf-up-function +1)))
 	  in0 in1)
       (goto-char out0)
-      (setq in0 (slurpbarf--excurse (lambda () (slurpbarf-down-function +1))))
+      (setq in0 (slurpbarf--excurse (slurpbarf-down-function +1)))
       (goto-char out1)
-      (setq in1 (slurpbarf--excurse (lambda () (slurpbarf-down-function -1))))
+      (setq in1 (slurpbarf--excurse (slurpbarf-down-function -1)))
       (delete-region in1 out1) ;; Order is significant
       (slurpbarf--insert-space)
       (goto-char out0)
