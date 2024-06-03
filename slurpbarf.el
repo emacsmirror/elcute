@@ -107,16 +107,29 @@ kind of usage."
   (skip-chars-forward "[:blank:]")
   (skip-chars-forward "\n" (1+ (point))))
 
+(defun slurpbarf--nxml-condition-case (interactive thunk)
+  (declare (indent 1))
+  (if interactive
+      (condition-case err (funcall thunk)
+	(error (signal 'user-error (cdr err))))
+    (funcall thunk)))
+
 (defun slurpbarf--nxml-up (n interactive)
-  (nxml-up-element n)
+  (slurpbarf--nxml-condition-case interactive
+    (lambda ()
+      (nxml-up-element n)))
   (slurpbarf--skip-blanks-and-newline))
 
 (defun slurpbarf--nxml-down (n interactive)
-  (nxml-down-element n)
+  (slurpbarf--nxml-condition-case interactive
+    (lambda ()
+      (nxml-down-element n)))
   (slurpbarf--skip-blanks-and-newline))
 
 (defun slurpbarf--nxml-forward (n interactive)
-  (nxml-forward-balanced-item n)
+  (slurpbarf--nxml-condition-case interactive
+    (lambda ()
+      (nxml-forward-balanced-item n)))
   (slurpbarf--skip-blanks-and-newline))
 
 (defun slurpbarf--excurse (function)
