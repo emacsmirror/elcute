@@ -64,7 +64,8 @@
 prevent words or symbols from conjoining.")
 (defvar slurpbarf-skip-comments-flag t
   "Decides whether to skip comments when barfing.")
-(defvar slurpbarf-up-function #'up-list
+(defvar slurpbarf-up-function
+  (lambda (arg interactive) (up-list arg t interactive))
   "Specifies the method of going up expression hierarchy.")
 (defvar slurpbarf-down-function #'down-list
   "Specifies the method of going down expression hierarchy.")
