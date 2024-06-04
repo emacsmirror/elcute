@@ -108,27 +108,26 @@ kind of usage."
   (skip-chars-forward "[:blank:]")
   (skip-chars-forward "\n" (1+ (point))))
 
-(defmacro slurpbarf--nxml-condition-case (interactive &rest body)
+(defmacro slurpbarf--nxml-motion (interactive &rest body)
   (declare (indent 1))
-  `(if ,interactive
-       (condition-case err (progn ,@body)
-	 (error (signal 'user-error (cdr err))))
-     (progn ,@body)))
+  `(progn
+     (if ,interactive
+	 (condition-case err (progn ,@body)
+	   (error (signal 'user-error (cdr err))))
+       (progn ,@body))
+     (slurpbarf--skip-blanks-and-newline)))
 
 (defun slurpbarf--nxml-up (n interactive)
-  (slurpbarf--nxml-condition-case interactive
-    (nxml-up-element n))
-  (slurpbarf--skip-blanks-and-newline))
+  (slurpbarf--nxml-motion interactive
+    (nxml-up-element n)))
 
 (defun slurpbarf--nxml-down (n interactive)
-  (slurpbarf--nxml-condition-case interactive
-    (nxml-down-element n))
-  (slurpbarf--skip-blanks-and-newline))
+  (slurpbarf--nxml-motion interactive
+    (nxml-down-element n)))
 
 (defun slurpbarf--nxml-forward (n interactive)
-  (slurpbarf--nxml-condition-case interactive
-    (nxml-forward-balanced-item n))
-  (slurpbarf--skip-blanks-and-newline))
+  (slurpbarf--nxml-motion interactive
+    (nxml-forward-balanced-item n)))
 
 (defmacro slurpbarf--excurse (&rest body)
   (declare (indent 0))
