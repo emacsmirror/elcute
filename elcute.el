@@ -1,6 +1,6 @@
 ;;; elcute.el --- Commands for marking and killing lines electrically  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2023 Vili Aapro
+;; Copyright (C) 2023, 2024 Vili Aapro
 
 ;; Author: Vili Aapro
 ;; Keywords: convenience
@@ -83,7 +83,9 @@ skip."
 
 (defun elcute--nxml-string-skip (sign limit)
   (let* ((terminator (nth 3 (syntax-ppss)))
-	 (chars (string ?^ terminator)))
+	 (chars (cl-case terminator
+		  (?\' "^'")
+		  (?\" "^\""))))
     (cl-case (cl-signum sign)
       (+1 (skip-chars-forward chars limit))
       (-1 (skip-chars-backward chars limit)))))
@@ -199,11 +201,11 @@ With negative ARG, moves mark tentatively -ARG lines backward."
   ;; Parts taken from Emacs source for `mark-word'
   (let ((extend (and allow-extend
 		     (or (and (eq last-command this-command) (mark t))
-			 (region-active-p))))
-	(sign (lambda () (if (< (mark) (point)) -1 1))))
+			 (region-active-p)))))
     (save-excursion
       (if extend
-	  (let ((arg (or arg (funcall sign))))
+	  (let ((arg (or arg (let ((sign (if (< (mark) (point)) -1 1)))
+			       sign))))
 	    (goto-char (mark))
 	    (elcute-forward-line arg)
 	    (set-mark (point)))
