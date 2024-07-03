@@ -175,7 +175,7 @@ errors raised inside BODY into user errors."
 (defconst slurpbarf--word-or-symbol-class (list 2 3))
 
 (defun slurpbarf--insert-space ()
-  "Insert a space between words or symbols."
+  "Insert a space between words and symbols."
   (when
       (and
        slurpbarf-insert-space-flag
