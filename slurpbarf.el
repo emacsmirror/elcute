@@ -40,6 +40,8 @@
 
 ;;; Code:
 
+(require 'nxml-mode)
+
 ;;;###autoload
 (define-minor-mode slurpbarf-mode
   "Slurp and barf expressions."
@@ -61,7 +63,7 @@
 ;;;###autoload
 (define-globalized-minor-mode global-slurpbarf-mode
   slurpbarf-mode slurpbarf-mode
-  :group "Slurpbarf")
+  :group 'convenience)
 
 (defvar slurpbarf-insert-space-flag t
   "Non-nil means insert a space between words or symbols.")
