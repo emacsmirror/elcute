@@ -4,7 +4,7 @@ Slurpbarf and Elcute are Emacs minor modes together providing a Paredit-like exp
 
 Slurpbarf binds `C-(` and `C-)` to slurping commands, and `C-{` and `C-}` to barfing commands.
 
-Elcute re-binds `kill-line` to a killing command respecting expression structure.
+Elcute remaps `kill-line` to a killing command respecting expression structure.
 
 Both Slurpbarf and Elcute are sensitive to Electric Indent mode.  I recommend use of both Electric Indent and Electric Pair modes alongside Slurpbarf and Elcute.
 
