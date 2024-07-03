@@ -60,7 +60,8 @@
 
 ;;;###autoload
 (define-globalized-minor-mode global-slurpbarf-mode
-  slurpbarf-mode slurpbarf-mode)
+  slurpbarf-mode slurpbarf-mode
+  :group "Slurpbarf")
 
 (defvar slurpbarf-insert-space-flag t
   "Non-nil means insert a space between words or symbols.")
@@ -148,6 +149,7 @@ errors raised inside BODY into user errors."
        (not electric-indent-inhibit)))
 
 (defun slurpbarf--indent (n)
+  "Indent N levels of containing expressions."
   (when (slurpbarf--indent-p)
     (cl-labels
 	((excurse (n extreme)
@@ -171,6 +173,7 @@ errors raised inside BODY into user errors."
 (defconst slurpbarf--word-or-symbol-class (list 2 3))
 
 (defun slurpbarf--insert-space ()
+  "Insert a space between words or symbols."
   (when
       (and
        slurpbarf-insert-space-flag
