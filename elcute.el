@@ -1,6 +1,6 @@
 ;;; elcute.el --- Commands for marking and killing lines electrically  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2023, 2024 Vili Aapro
+;; Copyright (C) 2023-2024 Vili Aapro
 
 ;; Author: Vili Aapro
 ;; Keywords: convenience

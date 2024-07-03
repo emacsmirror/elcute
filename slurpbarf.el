@@ -1,6 +1,6 @@
 ;;; slurpbarf.el --- Commands for slurping and barfing  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2023, 2024 Vili Aapro
+;; Copyright (C) 2023-2024 Vili Aapro
 
 ;; Author: Vili Aapro
 ;; Keywords: convenience
