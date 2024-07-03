@@ -63,10 +63,9 @@
   slurpbarf-mode slurpbarf-mode)
 
 (defvar slurpbarf-insert-space-flag t
-  "Decides whether to insert a space in place of delimeters to
-prevent words or symbols from conjoining.")
+  "Non-nil means insert a space between words or symbols.")
 (defvar slurpbarf-skip-comments-flag t
-  "Decides whether to skip comments when barfing.")
+  "Non-nil means skip comments when barfing.")
 (defvar slurpbarf-up-function
   (lambda (arg interactive) (up-list arg t interactive))
   "Specifies the method of going up expression hierarchy.")
@@ -108,10 +107,16 @@ kind of usage."
   (slurpbarf-forward-function (- arg) interactive))
 
 (defun slurpbarf--skip-blanks-and-newline ()
+  "Skip blanks and a newline.
+For stylistic reasons, we consider such trailing whitespace an
+inseparable part of an XML element."
   (skip-chars-forward "[:blank:]")
   (skip-chars-forward "\n" (1+ (point))))
 
 (defmacro slurpbarf--nxml-motion (interactive &rest body)
+  "Tame nXML-mode motion by skipping spaces and translating errors.
+If INTERACTIVE is non-nil, as it is interactively, translate
+errors raised inside BODY into user errors."
   (declare (indent 1))
   `(progn
      (if ,interactive
@@ -256,6 +261,7 @@ kind of usage."
   (slurpbarf-barf-forward (- arg) interactive))
 
 (defun slurpbarf-splice ()
+  "Splice expression at point into containing expression."
   (interactive)
   (save-excursion
     (let ((out0 (slurpbarf--excurse (slurpbarf-up-function -1)))

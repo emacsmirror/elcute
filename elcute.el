@@ -51,19 +51,17 @@
      elcute-error-inside-comment-flag nil)))
 
 (defvar elcute-stop-predicate (cl-constantly nil)
-  "Specifies the method of finding out whether to move no further
-than determined by `elcute--tentative-forward-line'.")
+  "Should we stop at tentative position?")
 
 (defun elcute-stop-predicate ()
-  "Tell whether to move no further than determined by
-`elcute--tentative-forward-line'."
+  "Should we stop at tentative position?"
   (funcall elcute-stop-predicate))
 
 (defun elcute--nxml-stop-p ()
-  "Refine motion in `elcute-forward-line' in nXML mode to lines
-instead of full text nodes by checking `xmltok-type'.
+  "Refine motion in `elcute-forward-line' in nXML mode to lines.
 
-In nXML mode, `elcute--default-creep-forward' and
+Instead of moving full text nodes, stop if `xmltok-type' is
+`'data'.  In nXML mode, `elcute--default-creep-forward' and
 `elcute--default-creep-backward' modify `xmltok-type' through
 `forward-sexp' and `backward-sexp', respectively."
   (eq xmltok-type 'data))
@@ -94,8 +92,7 @@ skip."
       (-1 (skip-chars-backward chars limit)))))
 
 (defvar elcute-error-inside-comment-flag t
-  "Specifies whether `elcute-mark-line' should raise an error when
-called inside a comment.")
+  "Non-nil means `elcute-mark-line' raises an error inside comments.")
 
 (defun elcute--tentative-forward-line (arg)
   (if (null arg)
@@ -140,8 +137,9 @@ called inside a comment.")
 		  (elcute--try #'backward-sexp)))))
 
 (defun elcute-forward-line (&optional arg)
-  "Move forward ARG lines, rounding up to whole expressions and not
-escaping any containing expression.
+  "Move forward ARG lines subject to conditions.
+Round up to whole expressions not escaping any containing
+expression.
 
 With null ARG, moves tentatively to end of line,
 or to beginning of next line when already at end of line.
@@ -154,7 +152,7 @@ to beginning of line."
   ;; nXML mode seems to work without taking `min' and `max', but we
   ;; nevertheless use them here for purity's sake.  When bumping into
   ;; a wall, nXML sets `xmltok-type' to something other than 'data,
-  ;; causing `elcute-stop-predicate' to return nil.  
+  ;; causing `elcute-stop-predicate' to return nil.
   (cl-labels
       ((move (sign min-or-max creep)
 	 (let ((limit (save-excursion
@@ -166,7 +164,7 @@ to beginning of line."
 		  (elcute-string-skip-function sign limit))
 		 ((and in-comment elcute-error-inside-comment-flag)
 		  (user-error "Inside comment"))
-		 (t 
+		 (t
 		  (let ((pos (save-excursion
 			       (funcall creep limit)
 			       (point))))
@@ -179,8 +177,9 @@ to beginning of line."
       (move -1 #'max elcute-creep-backward-function))))
 
 (defun elcute-mark-line (&optional arg allow-extend)
-  "Mark ARG lines, rounding up to whole expressions and not
-escaping any containing expression.
+  "Mark ARG lines subject to conditions.
+Round up to whole expressions not escaping any containing
+expression.
 
 When mark is inactive or ALLOW-EXTEND is null, behaves as if mark
 were at point.
@@ -230,8 +229,9 @@ With negative ARG, moves mark tentatively -ARG lines backward."
     (skip-chars-forward "[:blank:]")))
 
 (defun elcute-kill-line (&optional arg)
-  "Kill ARG lines electrically, rounding up to whole expressions and
-not escaping any containing expression.
+  "Kill ARG lines subject to conditions.
+Round up to whole expressions not escaping any containing
+expression.
 
 With null ARG, kills tentatively till end of line,
 or till beginning of next line when already at end of line.
