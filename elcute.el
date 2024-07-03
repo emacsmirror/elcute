@@ -137,7 +137,7 @@ skip."
 		  (elcute--try #'backward-sexp)))))
 
 (defun elcute-forward-line (&optional arg)
-  "Move forward ARG lines subject to conditions.
+  "Move forward ARG lines subject to adjustments.
 Round up to whole expressions not escaping any containing
 expression.
 
@@ -177,7 +177,7 @@ to beginning of line."
       (move -1 #'max elcute-creep-backward-function))))
 
 (defun elcute-mark-line (&optional arg allow-extend)
-  "Mark ARG lines subject to conditions.
+  "Mark ARG lines subject to adjustments.
 Round up to whole expressions not escaping any containing
 expression.
 
@@ -229,7 +229,7 @@ With negative ARG, moves mark tentatively -ARG lines backward."
     (skip-chars-forward "[:blank:]")))
 
 (defun elcute-kill-line (&optional arg)
-  "Kill ARG lines subject to conditions.
+  "Kill ARG lines subject to adjustments.
 Round up to whole expressions not escaping any containing
 expression.
 
