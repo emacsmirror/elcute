@@ -112,7 +112,7 @@ kind of usage."
 (defun slurpbarf--skip-blanks-and-newline ()
   "Skip blanks and a newline.
 For stylistic reasons, we consider such trailing whitespace an
-inseparable part of an XML element."
+inseparable part of an XML tag."
   (skip-chars-forward "[:blank:]")
   (skip-chars-forward "\n" (1+ (point))))
 
