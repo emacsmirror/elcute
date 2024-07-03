@@ -66,7 +66,7 @@
   :group 'convenience)
 
 (defvar slurpbarf-insert-space-flag t
-  "Non-nil means insert a space between words or symbols.")
+  "Non-nil means insert a space between words and symbols.")
 (defvar slurpbarf-skip-comments-flag t
   "Non-nil means skip comments when barfing.")
 (defvar slurpbarf-up-function
