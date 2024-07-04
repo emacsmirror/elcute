@@ -92,7 +92,7 @@ skip."
       (-1 (skip-chars-backward chars limit)))))
 
 (defvar elcute-error-inside-comment-flag t
-  "Non-nil means `elcute-mark-line' raises an error inside comments.")
+  "Non-nil means `elcute-forward-line' raises an error inside comments.")
 
 (defun elcute--tentative-forward-line (arg)
   (if (null arg)
