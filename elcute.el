@@ -76,7 +76,7 @@ Instead of moving full text nodes, stop if `xmltok-type' is
   (funcall elcute-context-function))
 
 (defun elcute--nxml-context ()
-  "Handle nXML mode's various string contexts."
+  "Translate nXML mode's contexts by token type."
   (let ((context (syntax-ppss-context (syntax-ppss))))
     (if (eq context 'string)
 	(progn
