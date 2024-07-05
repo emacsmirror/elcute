@@ -83,6 +83,7 @@ Instead of moving full text nodes, stop if `xmltok-type' is
 	  (nxml-token-after)
 	  (cl-case xmltok-type
 	    (start-tag context)
+	    (empty-element context)
 	    (data nil)
 	    (t (user-error "Inside unrecognized token"))))
       context)))
