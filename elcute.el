@@ -183,12 +183,12 @@ to beginning of line."
 			(elcute--tentative-forward-line arg)
 			(point)))
 	       (context (elcute-context-function)))
-	   (cl-case context
-	     (string
-	      (elcute-string-skip-function sign limit))
-	     (comment
-	      (when elcute-error-inside-comment-flag
-		(user-error "Inside comment")))
+	   (cond
+	    ((eq context 'string)
+	     (elcute-string-skip-function sign limit))
+	    ((and (eq context 'comment)
+		  elcute-error-inside-comment-flag)
+	     (user-error "Inside comment"))
 	     (t
 	      (let ((pos (save-excursion
 			   (funcall creep limit)
