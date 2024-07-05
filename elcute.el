@@ -76,14 +76,15 @@ Instead of moving full text nodes, stop if `xmltok-type' is
   (funcall elcute-context-function))
 
 (defun elcute--nxml-context ()
-  "Give null context for quoted strings in text."
+  "Handle nXML mode's various string contexts."
   (let ((context (syntax-ppss-context (syntax-ppss))))
     (if (eq context 'string)
 	(progn
 	  (nxml-token-after)
-	  (if (eq xmltok-type 'data)
-	      nil
-	    context))
+	  (cl-case xmltok-type
+	    (start-tag context)
+	    (data nil)
+	    (t (user-error "Inside unrecognized token"))))
       context)))
 
 (defvar elcute-string-skip-function
