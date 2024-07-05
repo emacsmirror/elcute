@@ -160,6 +160,12 @@ skip."
 		  (> 0 (skip-chars-backward "\n" limit))
 		  (elcute--try #'backward-sexp)))))
 
+(defmacro elcute--excurse (&rest body)
+  (declare (indent 0))
+  `(save-excursion
+     ,@body
+     (point)))
+
 (defun elcute-forward-line (&optional arg)
   "Move forward ARG lines subject to adjustments.
 Round up to whole expressions not escaping any containing
@@ -179,9 +185,7 @@ to beginning of line."
   ;; causing `elcute-stop-predicate' to return nil.
   (cl-labels
       ((move (sign min-or-max creep)
-	 (let ((limit (save-excursion
-			(elcute--tentative-forward-line arg)
-			(point)))
+	 (let ((limit (elcute--excurse (elcute--tentative-forward-line arg)))
 	       (context (elcute-context-function)))
 	   (cond
 	    ((eq context 'string)
@@ -190,9 +194,7 @@ to beginning of line."
 		  elcute-error-inside-comment-flag)
 	     (user-error "Inside comment"))
 	     (t
-	      (let ((pos (save-excursion
-			   (funcall creep limit)
-			   (point))))
+	      (let ((pos (elcute--excurse (funcall creep limit))))
 		(goto-char
 		 (if (elcute-stop-predicate)
 		     (funcall min-or-max pos limit)
