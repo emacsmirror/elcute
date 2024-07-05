@@ -90,7 +90,7 @@ Instead of moving full text nodes, stop if `xmltok-type' is
 
 (defvar elcute-string-skip-function
   #'elcute--lisp-data-string-skip
-  "Specifies the method of skipping within syntactic string.")
+  "Skips within syntactic string.")
 
 (defun elcute-string-skip-function (sign limit)
   "Skip within syntactic string.
@@ -130,9 +130,9 @@ skip."
     (:success t)))
 
 (defvar elcute-creep-forward-function #'elcute--default-creep-forward
-  "Specifies the method of creeping forward.")
+  "Creeps forward.")
 (defvar elcute-creep-backward-function #'elcute--default-creep-backward
-  "Specifies the method of creeping backward.")
+  "Creeps backward.")
 
 (defun elcute--default-creep-forward (limit)
   (while (and (< (point) limit)

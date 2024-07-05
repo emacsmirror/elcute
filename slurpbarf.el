@@ -71,11 +71,11 @@
   "Non-nil means skip comments when barfing.")
 (defvar slurpbarf-up-function
   (lambda (arg interactive) (up-list arg t interactive))
-  "Specifies the method of going up expression hierarchy.")
+  "Goes up expression hierarchy.")
 (defvar slurpbarf-down-function #'down-list
-  "Specifies the method of going down expression hierarchy.")
+  "Goes down expression hierarchy.")
 (defvar slurpbarf-forward-function #'forward-sexp
-  "Specifies the method of moving forward expressions laterally.")
+  "Moves forward expressions laterally.")
 
 (defun slurpbarf-up-function (&optional arg interactive)
   "Go up |ARG| levels of expression hierarchy.
