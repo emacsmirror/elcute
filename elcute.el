@@ -193,12 +193,12 @@ to beginning of line."
 	    ((and (eq context 'comment)
 		  elcute-error-inside-comment-flag)
 	     (user-error "Inside comment"))
-	     (t
-	      (let ((pos (elcute--excurse (funcall creep limit))))
-		(goto-char
-		 (if (elcute-stop-predicate)
-		     (funcall min-or-max pos limit)
-		   pos))))))))
+	    (t
+	     (let ((pos (elcute--excurse (funcall creep limit))))
+	       (goto-char
+		(if (elcute-stop-predicate)
+		    (funcall min-or-max pos limit)
+		  pos))))))))
     (if (> (or arg 1) 0)
 	(move +1 #'min elcute-creep-forward-function)
       (move -1 #'max elcute-creep-backward-function))))
