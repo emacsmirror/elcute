@@ -47,6 +47,7 @@
   (when (derived-mode-p 'nxml-mode)
     (setq-local
      elcute-stop-predicate #'elcute--nxml-stop-p
+     elcute-context-function #'elcute--nxml-context
      elcute-string-skip-function #'elcute--nxml-string-skip
      elcute-error-inside-comment-flag nil)))
 
@@ -65,6 +66,24 @@ Instead of moving full text nodes, stop if `xmltok-type' is
 `elcute--default-creep-backward' modify `xmltok-type' through
 `forward-sexp' and `backward-sexp', respectively."
   (eq xmltok-type 'data))
+
+(defvar elcute-context-function
+  (lambda () (syntax-ppss-context (syntax-ppss)))
+  "Returns syntactic context at point.")
+
+(defun elcute-context-function ()
+  "Return syntactic context at point."
+  (funcall elcute-context-function))
+
+(defun elcute--nxml-context ()
+  (let ((context (syntax-ppss-context (syntax-ppss))))
+    (if (eq context 'string)
+	(progn
+	  (nxml-token-after)
+	  (if (eq xmltok-type 'data)
+	      nil
+	    context))
+      context)))
 
 (defvar elcute-string-skip-function
   #'elcute--lisp-data-string-skip
@@ -158,20 +177,21 @@ to beginning of line."
 	 (let ((limit (save-excursion
 			(elcute--tentative-forward-line arg)
 			(point)))
-	       (in-string (nth 3 (syntax-ppss)))
-	       (in-comment (nth 4 (syntax-ppss))))
-	   (cond (in-string
-		  (elcute-string-skip-function sign limit))
-		 ((and in-comment elcute-error-inside-comment-flag)
-		  (user-error "Inside comment"))
-		 (t
-		  (let ((pos (save-excursion
-			       (funcall creep limit)
-			       (point))))
-		    (goto-char
-		     (if (elcute-stop-predicate)
-			 (funcall min-or-max pos limit)
-		       pos))))))))
+	       (context (elcute-context-function)))
+	   (cl-case context
+	     (string
+	      (elcute-string-skip-function sign limit))
+	     (comment
+	      (when elcute-error-inside-comment-flag
+		(user-error "Inside comment")))
+	     (t
+	      (let ((pos (save-excursion
+			   (funcall creep limit)
+			   (point))))
+		(goto-char
+		 (if (elcute-stop-predicate)
+		     (funcall min-or-max pos limit)
+		   pos))))))))
     (if (> (or arg 1) 0)
 	(move +1 #'min elcute-creep-forward-function)
       (move -1 #'max elcute-creep-backward-function))))
