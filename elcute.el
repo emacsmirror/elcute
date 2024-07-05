@@ -76,6 +76,7 @@ Instead of moving full text nodes, stop if `xmltok-type' is
   (funcall elcute-context-function))
 
 (defun elcute--nxml-context ()
+  "Give null context for quoted strings in text."
   (let ((context (syntax-ppss-context (syntax-ppss))))
     (if (eq context 'string)
 	(progn
