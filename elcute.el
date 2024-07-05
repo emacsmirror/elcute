@@ -67,8 +67,10 @@ Instead of moving full text nodes, stop if `xmltok-type' is
 `forward-sexp' and `backward-sexp', respectively."
   (eq xmltok-type 'data))
 
-(defvar elcute-context-function
-  (lambda () (syntax-ppss-context (syntax-ppss)))
+(defun elcute--context ()
+  (syntax-ppss-context (syntax-ppss)))
+
+(defvar elcute-context-function #'elcute--context
   "Returns syntactic context at point.")
 
 (defun elcute-context-function ()
@@ -77,7 +79,7 @@ Instead of moving full text nodes, stop if `xmltok-type' is
 
 (defun elcute--nxml-context ()
   "Translate nXML mode's contexts by token type."
-  (let ((context (syntax-ppss-context (syntax-ppss))))
+  (let ((context (elcute--context)))
     (if (eq context 'string)
 	(progn
 	  (nxml-token-after)
