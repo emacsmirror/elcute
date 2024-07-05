@@ -118,7 +118,7 @@ inseparable part of an XML tag."
 
 (defmacro slurpbarf--nxml-motion (interactive &rest body)
   "Tame nXML-mode motion by skipping spaces and translating errors.
-If INTERACTIVE is non-nil translate errors raised inside BODY
+If INTERACTIVE is non-nil, translate errors raised inside BODY
 into user errors."
   (declare (indent 1))
   `(progn
