@@ -78,7 +78,7 @@ Instead of moving full nodes, stop if `xmltok-type' is `'data' or
   (funcall elcute-context-function))
 
 (defun elcute--nxml-context ()
-  "Translate nXML mode's contexts by token type."
+  "Return syntactic context at point translated by XML token type."
   (let ((context (elcute--context)))
     (if (eq context 'string)
 	(progn
