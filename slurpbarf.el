@@ -160,9 +160,9 @@ Restrict indentation to field at point."
 	     (slurpbarf--excurse
 	       (condition-case nil
 		   (slurpbarf-up-function n)
-		 (error (goto-char (funcall extreme)))))))
-	(let ((left (excurse (- n) #'point-min))
-	      (right (excurse n #'point-max)))
+		 (error (goto-char extreme))))))
+	(let ((left (excurse (- n) (point-min)))
+	      (right (excurse n (point-max))))
 	  (indent-region left right))))))
 
 (defun slurpbarf--unindent (pos)
