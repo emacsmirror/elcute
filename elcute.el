@@ -179,10 +179,8 @@ to beginning of line.
 With negative ARG, moves tentatively -ARG lines backward,
 to beginning of line."
   (interactive "P")
-  ;; nXML mode seems to work without taking `min' and `max', but we
-  ;; nevertheless use them here for purity's sake.  When bumping into
-  ;; a wall, nXML sets `xmltok-type' to something other than 'data,
-  ;; causing `elcute-stop-predicate' to return nil.
+  ;; nXML mode happens to work without taking `min' and `max' inside
+  ;; text nodes, but not inside comment nodes.
   (cl-labels
       ((move (sign min-or-max creep)
 	 (let ((limit (elcute--excurse (elcute--tentative-forward-line arg)))
