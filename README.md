@@ -12,7 +12,7 @@ I personally have customized `global-slurpbarf-mode` to `t` and have added the f
 
 ```
 (add-hook 'lisp-data-mode-hook #'elcute-mode)
-(add-hook 'minibuffer-mode-hook #'elcute-mode)
+(add-hook 'eval-expression-minibuffer-setup-hook #'elcute-mode)
 (add-hook 'nxml-mode-hook #'elcute-mode)
 (add-hook 'sly-mrepl-mode-hook #'elcute-mode)
 ```
