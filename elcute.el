@@ -61,11 +61,11 @@
 (defun elcute--nxml-stop-p ()
   "Refine motion in `elcute-forward-line' in nXML mode to lines.
 
-Instead of moving full text nodes, stop if `xmltok-type' is
-`'data'.  In nXML mode, `elcute--default-creep-forward' and
+Instead of moving full nodes, stop if `xmltok-type' is `'data' or
+`'comment'.  In nXML mode, `elcute--default-creep-forward' and
 `elcute--default-creep-backward' modify `xmltok-type' through
 `forward-sexp' and `backward-sexp', respectively."
-  (eq xmltok-type 'data))
+  (memq xmltok-type '(data comment)))
 
 (defun elcute--context ()
   (syntax-ppss-context (syntax-ppss)))
