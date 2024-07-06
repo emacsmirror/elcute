@@ -151,17 +151,19 @@ into user errors."
        (not electric-indent-inhibit)))
 
 (defun slurpbarf--indent (n)
-  "Indent N levels of containing expressions."
+  "Indent N levels of containing expressions.
+Restrict indentation to field at point."
   (when (slurpbarf--indent-p)
-    (cl-labels
-	((excurse (n extreme)
-	   (slurpbarf--excurse
-	     (condition-case nil
-		 (slurpbarf-up-function n)
-	       (error (goto-char (funcall extreme)))))))
-      (let ((left (excurse (- n) #'point-min))
-	    (right (excurse n #'point-max)))
-	(indent-region left right)))))
+    (with-restriction (field-beginning) (field-end)
+      (cl-labels
+	  ((excurse (n extreme)
+	     (slurpbarf--excurse
+	       (condition-case nil
+		   (slurpbarf-up-function n)
+		 (error (goto-char (funcall extreme)))))))
+	(let ((left (excurse (- n) #'point-min))
+	      (right (excurse n #'point-max)))
+	  (indent-region left right))))))
 
 (defun slurpbarf--unindent (pos)
   (when (slurpbarf--indent-p)
