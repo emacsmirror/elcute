@@ -35,6 +35,9 @@
 
 ;;; Code:
 
+(require 'cl-lib)
+(require 'nxml-mode)
+
 ;;;###autoload
 (define-minor-mode elcute-mode
   "Kill lines rounding up to whole expressions."
