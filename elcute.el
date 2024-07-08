@@ -40,7 +40,15 @@
 
 ;;;###autoload
 (define-minor-mode elcute-mode
-  "Kill lines rounding up to whole expressions."
+  "Toggle electric killing of lines (Elcute mode) in the current buffer.
+
+When Elcute mode is enabled, `kill-line' is remapped to
+`elcute-kill-line', and various buffer-local variables are set
+according to major mode, affecting the commands
+`elcute-forward-line', `elcute-mark-line' and `elcute-kill-line'.
+
+Supported major modes are `lisp-data-mode' and `nxml-mode' along
+with their derivatives."
   :keymap (define-keymap
 	    "<remap> <kill-line>" #'elcute-kill-line)
   (when (derived-mode-p 'lisp-data-mode)

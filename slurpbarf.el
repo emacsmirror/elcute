@@ -45,7 +45,16 @@
 
 ;;;###autoload
 (define-minor-mode slurpbarf-mode
-  "Slurp and barf expressions."
+  "Toggle slurping and barfing (Slurpbarf mode) in the current buffer.
+
+When Slurpbarf mode is enabled, various buffer-local variables
+are set according to major mode, affecting the commands bound by
+`slurpbarf-mode-map', and the command `slurpbarf-splice'.
+
+Supported major modes are `lisp-data-mode' and `nxml-mode' along
+with their derivatives; however, the default behavior may be
+useful in other modes, too; a global mode, `global-slurpbarf-mode',
+is provided."
   :keymap (define-keymap
 	    "C-)" #'slurpbarf-slurp-forward
 	    "C-(" #'slurpbarf-slurp-backward
