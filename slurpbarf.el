@@ -120,8 +120,7 @@ kind of usage."
 
 (defun slurpbarf--lisp-up (n interactive)
   (up-list n t interactive)
-  (when (< n 0)
-    (backward-prefix-chars)))
+  (backward-prefix-chars))
 
 (defun slurpbarf--skip-blanks-and-newline ()
   "Skip blanks and a newline.
