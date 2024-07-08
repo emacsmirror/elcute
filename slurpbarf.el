@@ -79,8 +79,7 @@ is provided."
   "Non-nil means insert a space between words and symbols.")
 (defvar slurpbarf-skip-comments-flag t
   "Non-nil means skip comments when barfing.")
-(defvar slurpbarf-up-function
-  (lambda (arg interactive) (up-list arg t interactive))
+(defvar slurpbarf-up-function #'slurpbarf--lisp-up
   "Goes up expression hierarchy.")
 (defvar slurpbarf-down-function #'down-list
   "Goes down expression hierarchy.")
@@ -118,6 +117,11 @@ as it is interactively, report errors as appropriate for this
 kind of usage."
   (interactive "p\nd")
   (slurpbarf-forward-function (- arg) interactive))
+
+(defun slurpbarf--lisp-up (n interactive)
+  (up-list n t interactive)
+  (when (< n 0)
+    (backward-prefix-chars)))
 
 (defun slurpbarf--skip-blanks-and-newline ()
   "Skip blanks and a newline.
