@@ -223,7 +223,14 @@ Restrict indentation to field at point."
   "Slurp or ingest forward ARG expressions.
 With negative argument, slurp backward.  If INTERACTIVE is
 non-nil, as it is interactively, report errors as appropriate for
-this kind of usage."
+this kind of usage.
+
+Explanation in `ert' syntax (see info node `(ert)erts files'):
+=-=
+((foo | bar) baz)
+=-=
+((foo | bar baz))
+=-=-="
   (interactive "p\nd")
   (let ((sign (cl-signum arg)))
     (save-excursion
@@ -243,7 +250,14 @@ this kind of usage."
   "Slurp or ingest backward ARG expressions.
 With negative argument, slurp forward.  If INTERACTIVE is
 non-nil, as it is interactively, report errors as appropriate for
-this kind of usage."
+this kind of usage.
+
+Explanation in `ert' syntax (see info node `(ert)erts files'):
+=-=
+(foo (bar | baz))
+=-=
+((foo bar | baz))
+=-=-="
   (interactive "p\nd")
   (slurpbarf-slurp-forward (- arg) interactive))
 
@@ -251,7 +265,14 @@ this kind of usage."
   "Barf or emit forward ARG expressions.
 With negative argument, barf backward.  If INTERACTIVE is
 non-nil, as it is interactively, report errors as appropriate for
-this kind of usage."
+this kind of usage.
+
+Explanation in `ert' syntax (see info node `(ert)erts files'):
+=-=
+((foo | bar baz))
+=-=
+((foo | bar) baz)
+=-=-="
   (interactive "p\nd")
   (let ((sign (cl-signum arg)))
     (save-excursion
@@ -273,12 +294,26 @@ this kind of usage."
   "Barf or emit backward ARG expressions.
 With negative argument, barf forward.  If INTERACTIVE is non-nil,
 as it is interactively, report errors as appropriate for this
-kind of usage."
+kind of usage.
+
+Explanation in `ert' syntax (see info node `(ert)erts files'):
+=-=
+((foo bar | baz))
+=-=
+(foo (bar | baz))
+=-=-="
   (interactive "p\nd")
   (slurpbarf-barf-forward (- arg) interactive))
 
 (defun slurpbarf-splice ()
-  "Splice expression at point into containing expression."
+  "Splice expression at point into containing expression.
+
+Explanation in `ert' syntax (see info node `(ert)erts files'):
+=-=
+((foo | bar))
+=-=
+(foo | bar)
+=-=-="
   (interactive)
   (save-excursion
     (let ((out0 (slurpbarf--excurse (slurpbarf-up-function -1)))
