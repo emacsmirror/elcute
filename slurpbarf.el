@@ -326,7 +326,7 @@ Explanation in `ert' syntax (see info node `(ert)erts files'):
       (setq in0 (slurpbarf--excurse (slurpbarf-down-function +1)))
       (goto-char out1)
       (setq in1 (slurpbarf--excurse (slurpbarf-down-function -1)))
-      (delete-region in1 out1) ;; Order is significant
+      (delete-region in1 out1)
       (slurpbarf--insert-space)
       (goto-char out0)
       (delete-region in0 out0)
