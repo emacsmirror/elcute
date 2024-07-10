@@ -127,8 +127,8 @@ kind of usage."
   "Move up N levels of expressions in Lisp Data.
 Treat strings as atoms and handle prefix characters.
 
-If INTERACTIVE is non-nil, as it is interactively, report errors
-as appropriate for this kind of usage."
+If INTERACTIVE is non-nil, report errors as appropriate for this
+kind of usage."
   (when (/= n 0)
     (let ((pos
 	   (slurpbarf--excurse
