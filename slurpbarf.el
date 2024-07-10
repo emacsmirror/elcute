@@ -120,8 +120,8 @@ kind of usage."
 
 (defun slurpbarf--break-out-string ()
   (when (eq (syntax-ppss-context (syntax-ppss)) 'string)
-    (skip-syntax-forward "^\"")
-    (forward-char)))
+    (skip-syntax-backward "^\"")
+    (backward-char)))
 
 (defun slurpbarf--lisp-up (n interactive)
   "Move up N levels of expressions in Lisp Data.
