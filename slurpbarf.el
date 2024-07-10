@@ -119,8 +119,18 @@ kind of usage."
   (slurpbarf-forward-function (- arg) interactive))
 
 (defun slurpbarf--lisp-up (n interactive)
-  (up-list n t interactive)
-  (backward-prefix-chars))
+  "Move up N levels of expressions in Lisp Data.
+Treat strings as atoms and handle prefix characters.
+INTERACTIVE is ignored."
+  (when (/= n 0)
+    (let ((pos
+	   (slurpbarf--excurse
+	     (when (eq (syntax-ppss-context (syntax-ppss)) 'string)
+	       (skip-syntax-forward "^\"")
+	       (forward-char))
+	     (up-list n)
+	     (backward-prefix-chars))))
+      (goto-char pos))))
 
 (defun slurpbarf--skip-blanks-and-newline ()
   "Skip blanks and a newline.
