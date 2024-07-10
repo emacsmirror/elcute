@@ -131,7 +131,7 @@ INTERACTIVE is ignored."
     (let ((pos
 	   (slurpbarf--excurse
 	     (slurpbarf--break-out-string)
-	     (up-list n)
+	     (up-list n nil interactive)
 	     (backward-prefix-chars))))
       (goto-char pos))))
 
