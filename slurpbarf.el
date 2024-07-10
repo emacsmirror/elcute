@@ -125,10 +125,9 @@ kind of usage."
 
 (defun slurpbarf--lisp-up (n interactive)
   "Move up N levels of expressions in Lisp Data.
-Treat strings as atoms and handle prefix characters.
-
-If INTERACTIVE is non-nil, report errors as appropriate for this
-kind of usage."
+Treat strings as atoms and include prefix characters.  If
+INTERACTIVE is non-nil, report errors as appropriate for
+interactive usage."
   (when (/= n 0)
     (let ((pos
 	   (slurpbarf--excurse
