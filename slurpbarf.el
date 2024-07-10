@@ -118,6 +118,11 @@ kind of usage."
   (interactive "p\nd")
   (slurpbarf-forward-function (- arg) interactive))
 
+(defun slurpbarf--break-out-string ()
+  (when (eq (syntax-ppss-context (syntax-ppss)) 'string)
+    (skip-syntax-forward "^\"")
+    (forward-char)))
+
 (defun slurpbarf--lisp-up (n interactive)
   "Move up N levels of expressions in Lisp Data.
 Treat strings as atoms and handle prefix characters.
@@ -125,9 +130,7 @@ INTERACTIVE is ignored."
   (when (/= n 0)
     (let ((pos
 	   (slurpbarf--excurse
-	     (when (eq (syntax-ppss-context (syntax-ppss)) 'string)
-	       (skip-syntax-forward "^\"")
-	       (forward-char))
+	     (slurpbarf--break-out-string)
 	     (up-list n)
 	     (backward-prefix-chars))))
       (goto-char pos))))
