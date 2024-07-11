@@ -115,6 +115,12 @@ kind of usage."
   (interactive "p\nd")
   (slurpbarf-forward-function (- arg) interactive))
 
+(defmacro slurpbarf--excurse (&rest body)
+  (declare (indent 0))
+  `(save-excursion
+     ,@body
+     (point)))
+
 (defun slurpbarf--break-out-string ()
   (when (eq (syntax-ppss-context (syntax-ppss)) 'string)
     (skip-syntax-backward "^\"")
@@ -163,12 +169,6 @@ into user errors."
 (defun slurpbarf--nxml-forward (n interactive)
   (slurpbarf--nxml-motion interactive
     (nxml-forward-balanced-item n)))
-
-(defmacro slurpbarf--excurse (&rest body)
-  (declare (indent 0))
-  `(save-excursion
-     ,@body
-     (point)))
 
 (defun slurpbarf--indent-p ()
   (and electric-indent-mode
