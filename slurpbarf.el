@@ -193,6 +193,7 @@ Restrict indentation to field at point."
 	  (indent-region left right))))))
 
 (defun slurpbarf--unindent (pos)
+  "Delete horizontal whitespace after POS if POS starts a line."
   (when (slurpbarf--indent-p)
     (save-excursion
       (goto-char pos)
