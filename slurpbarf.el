@@ -144,23 +144,23 @@ interactive usage."
 Work around unexpected behaviour in `scan-sexps' ending up inside
 comments at end of buffer.  If INTERACTIVE is non-nil, report
 errors as appropriate for interactive usage."
-  (let ((pos
-	 (slurpbarf--excurse
-	   (condition-case err
-	       (goto-char (scan-sexps (point) n))
-	     (scan-error
-	      (if interactive
-		  (user-error
-		   (if (> n 0)
-		       "No next sexp"
-		     "No previous sexp"))
-		(signal 'scan-error err)))))))
-    (if (and (eq pos (point-max))
-	     (eq (save-excursion (syntax-ppss-context (syntax-ppss pos)))
-		 'comment))
-	(if interactive (user-error "No next sexp")
-	  (error "Sexp scan ended up inside comment"))
-      (goto-char pos))))
+  (cl-labels ((complain ()
+		(user-error
+		 (if (> n 0) "No next sexp" "No previous sexp"))))
+    (let ((pos
+	   (slurpbarf--excurse
+	     (condition-case err
+		 (let ((pos (scan-sexps (point) n)))
+		   (if pos (goto-char pos) (complain)))
+	       (scan-error
+		(if interactive (complain)
+		  (signal 'scan-error err)))))))
+      (if (and (eq pos (point-max))
+	       (eq (save-excursion (syntax-ppss-context (syntax-ppss pos)))
+		   'comment))
+	  (if interactive (complain)
+	    (error "Sexp scan ended up inside comment"))
+	(goto-char pos)))))
 
 (defun slurpbarf--skip-blanks-and-newline ()
   "Skip blanks and a newline.
