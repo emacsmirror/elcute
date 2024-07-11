@@ -148,13 +148,14 @@ errors as appropriate for interactive usage."
 		(user-error
 		 (if (> n 0) "No next sexp" "No previous sexp"))))
     (let ((pos
-	   (slurpbarf--excurse
-	     (condition-case err
-		 (let ((pos (scan-sexps (point) n)))
-		   (if pos (goto-char pos) (complain)))
-	       (scan-error
-		(if interactive (complain)
-		  (signal 'scan-error err)))))))
+	   (condition-case err
+	       (let ((pos (scan-sexps (point) n)))
+		 (if pos pos
+		   (if interactive (complain)
+		     (error "Sexp scan returned nil"))))
+	     (scan-error
+	      (if interactive (complain)
+		(signal 'scan-error err))))))
       (if (and (eq pos (point-max))
 	       (eq (save-excursion (syntax-ppss-context (syntax-ppss pos)))
 		   'comment))
