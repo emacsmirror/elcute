@@ -154,7 +154,7 @@ errors as appropriate for interactive usage."
 		   (if (> n 0)
 		       "No next sexp"
 		     "No previous sexp"))
-		(raise err)))))))
+		(signal 'scan-error err)))))))
     (if (and (eq pos (point-max))
 	     (eq (save-excursion (syntax-ppss-context (syntax-ppss pos)))
 		 'comment))
