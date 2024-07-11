@@ -142,7 +142,7 @@ interactive usage."
 (defun slurpbarf--lisp-forward (n interactive)
   "Move forward N expressions in Lisp Data.
 Work around unexpected behaviour in `scan-sexps' ending up inside
-comments at end of buffer.  If INTERACTIVE is non-nil, report
+a comment at end of buffer.  If INTERACTIVE is non-nil, report
 errors as appropriate for interactive usage."
   (cl-labels ((complain ()
 		(user-error
@@ -200,7 +200,7 @@ into user errors."
 
 (defun slurpbarf--indent (n)
   "Indent N levels of containing expressions.
-Restrict indentation to field at point.  Do nothing is Electric
+Restrict indentation to field at point.  Do nothing if Electric
 Indent is disabled."
   (when (slurpbarf--indent-p)
     (with-restriction (field-beginning) (field-end)
@@ -216,7 +216,7 @@ Indent is disabled."
 
 (defun slurpbarf--unindent (pos)
   "Delete horizontal whitespace after POS if POS starts a line.
-Do nothing is Electric Indent is disabled."
+Do nothing if Electric Indent is disabled."
   (when (slurpbarf--indent-p)
     (save-excursion
       (goto-char pos)
