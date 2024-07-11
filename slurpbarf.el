@@ -48,24 +48,21 @@
   "Toggle slurping and barfing (Slurpbarf mode) in the current buffer.
 
 When Slurpbarf mode is enabled, various buffer-local variables
-are set according to major mode, affecting the commands bound to
-in `slurpbarf-mode-map', and the command `slurpbarf-splice'.
+are set according to major mode, affecting the commands bound in
+the mode map, and the command `slurpbarf-splice'.
 
 Supported major modes are `lisp-data-mode' and `nxml-mode' along
-with their derivatives; however, the default behavior may be
-useful in other modes, too; a global mode, `global-slurpbarf-mode',
-is provided."
+with their derivatives; however, the default Lisp Data behavior
+may be useful globally."
   :keymap (define-keymap
 	    "C-)" #'slurpbarf-slurp-forward
 	    "C-(" #'slurpbarf-slurp-backward
 	    "C-}" #'slurpbarf-barf-forward
 	    "C-{" #'slurpbarf-barf-backward)
-  (when (derived-mode-p 'text-mode)
-    (setq-local
-     slurpbarf-insert-space-flag nil
-     slurpbarf-skip-comments-flag nil))
   (when (derived-mode-p 'nxml-mode)
     (setq-local
+     slurpbarf-insert-space-flag nil
+     slurpbarf-skip-comments-flag nil
      slurpbarf-up-function #'slurpbarf--nxml-up
      slurpbarf-down-function #'slurpbarf--nxml-down
      slurpbarf-forward-function #'slurpbarf--nxml-forward)))
