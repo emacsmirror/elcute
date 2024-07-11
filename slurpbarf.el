@@ -179,7 +179,8 @@ into user errors."
 
 (defun slurpbarf--indent (n)
   "Indent N levels of containing expressions.
-Restrict indentation to field at point."
+Restrict indentation to field at point.  Do nothing is Electric
+Indent is disabled."
   (when (slurpbarf--indent-p)
     (with-restriction (field-beginning) (field-end)
       (cl-labels
@@ -193,7 +194,8 @@ Restrict indentation to field at point."
 	  (indent-region left right))))))
 
 (defun slurpbarf--unindent (pos)
-  "Delete horizontal whitespace after POS if POS starts a line."
+  "Delete horizontal whitespace after POS if POS starts a line.
+Do nothing is Electric Indent is disabled."
   (when (slurpbarf--indent-p)
     (save-excursion
       (goto-char pos)
