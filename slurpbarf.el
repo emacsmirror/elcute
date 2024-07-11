@@ -80,7 +80,7 @@ may be useful globally."
   "Goes up expression hierarchy.")
 (defvar slurpbarf-down-function #'down-list
   "Goes down expression hierarchy.")
-(defvar slurpbarf-forward-function #'forward-sexp
+(defvar slurpbarf-forward-function #'slurpbarf--lisp-forward
   "Moves forward expressions laterally.")
 
 (defun slurpbarf-up-function (&optional arg interactive)
@@ -137,6 +137,29 @@ interactive usage."
 	     (slurpbarf--break-out-string)
 	     (up-list n nil interactive)
 	     (backward-prefix-chars))))
+      (goto-char pos))))
+
+(defun slurpbarf--lisp-forward (n interactive)
+  "Move forward N expressions in Lisp Data.
+Work around unexpected behaviour in `scan-sexps' ending up inside
+comments at end of buffer.  If INTERACTIVE is non-nil, report
+errors as appropriate for interactive usage."
+  (let ((pos
+	 (slurpbarf--excurse
+	   (condition-case err
+	       (goto-char (scan-sexps (point) n))
+	     (scan-error
+	      (if interactive
+		  (user-error
+		   (if (> n 0)
+		       "No next sexp"
+		     "No previous sexp"))
+		(raise err)))))))
+    (if (and (eq pos (point-max))
+	     (eq (save-excursion (syntax-ppss-context (syntax-ppss pos)))
+		 'comment))
+	(if interactive (user-error "No next sexp")
+	  (error "Sexp scan ended up inside comment"))
       (goto-char pos))))
 
 (defun slurpbarf--skip-blanks-and-newline ()
