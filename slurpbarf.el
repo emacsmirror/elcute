@@ -141,9 +141,9 @@ interactive usage."
 
 (defun slurpbarf--lisp-forward (n interactive)
   "Move forward N expressions in Lisp Data.
-Work around unexpected behaviour in `scan-sexps' ending up inside
-a comment at end of buffer.  If INTERACTIVE is non-nil, report
-errors as appropriate for interactive usage."
+Work around unexpected behaviour with `scan-sexps' ending up
+inside a comment at end of buffer.  If INTERACTIVE is non-nil,
+report errors as appropriate for interactive usage."
   (cl-labels ((complain ()
 		(user-error
 		 (if (> n 0) "No next sexp" "No previous sexp"))))
