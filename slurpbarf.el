@@ -154,7 +154,7 @@ report errors as appropriate for interactive usage."
     (let ((pos (if interactive
 		   (condition-case nil (scan) (scan-error (complain)))
 		 (scan))))
-      (unless pos (err "Sexp scan returned nil"))
+      (unless pos (err (if (> n 0) "End of buffer" "Beginning of buffer")))
       (if (and (eq pos (point-max))
 	       (eq (save-excursion (syntax-ppss-context (syntax-ppss pos)))
 		   'comment))
