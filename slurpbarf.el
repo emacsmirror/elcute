@@ -152,7 +152,9 @@ non-nil, report errors as appropriate for interactive usage."
 	      (err (str)
 		(if interactive (complain) (error str))))
     (let ((pos (if interactive
-		   (condition-case nil (scan) (scan-error (complain)))
+		   (condition-case nil
+		       (scan)
+		     (scan-error (complain)))
 		 (scan))))
       (cond
        ((not pos)
