@@ -144,18 +144,19 @@ interactive usage."
 Work around unexpected behaviour with `scan-sexps' ending up
 inside a comment at end of buffer.  If INTERACTIVE is non-nil,
 report errors as appropriate for interactive usage."
-  (cl-labels ((complain ()
+  (cl-labels ((scan ()
+		(scan-sexps (point) n))
+	      (complain ()
 		(user-error
 		 (if (> n 0) "No next sexp" "No previous sexp"))))
-    (let ((pos
-	   (condition-case err
-	       (let ((pos (scan-sexps (point) n)))
-		 (if pos pos
-		   (if interactive (complain)
-		     (error "Sexp scan returned nil"))))
-	     (scan-error
-	      (if interactive (complain)
-		(signal 'scan-error err))))))
+    (let ((pos (if interactive
+		   (condition-case err
+		       (scan)
+		     (scan-error (complain)))
+		 (scan))))
+      (unless pos
+	(if interactive (complain)
+	  (error "Sexp scan returned nil")))
       (if (and (eq pos (point-max))
 	       (eq (save-excursion (syntax-ppss-context (syntax-ppss pos)))
 		   'comment))
