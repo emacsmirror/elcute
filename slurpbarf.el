@@ -154,13 +154,14 @@ report errors as appropriate for interactive usage."
     (let ((pos (if interactive
 		   (condition-case nil (scan) (scan-error (complain)))
 		 (scan))))
-      (unless pos
+      (cond
+       ((not pos)
 	(err (if (> n 0) "End of buffer" "Beginning of buffer")))
-      (if (and (eq pos (point-max))
-	       (eq (save-excursion (syntax-ppss-context (syntax-ppss pos)))
-		   'comment))
-	  (err "Sexp scan ended up inside comment")
-	(goto-char pos)))))
+       ((and (eq pos (point-max))
+	     (eq (save-excursion (syntax-ppss-context (syntax-ppss pos)))
+		 'comment))
+	(err "Sexp scan ended up inside comment"))
+       (t (goto-char pos))))))
 
 (defun slurpbarf--skip-blanks-and-newline ()
   "Skip blanks and a newline.
