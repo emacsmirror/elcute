@@ -150,9 +150,7 @@ report errors as appropriate for interactive usage."
 		(user-error
 		 (if (> n 0) "No next sexp" "No previous sexp"))))
     (let ((pos (if interactive
-		   (condition-case err
-		       (scan)
-		     (scan-error (complain)))
+		   (condition-case nil (scan) (scan-error (complain)))
 		 (scan))))
       (unless pos
 	(if interactive (complain)
