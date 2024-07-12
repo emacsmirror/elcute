@@ -148,18 +148,17 @@ report errors as appropriate for interactive usage."
 		(scan-sexps (point) n))
 	      (complain ()
 		(user-error
-		 (if (> n 0) "No next sexp" "No previous sexp"))))
+		 (if (> n 0) "No next sexp" "No previous sexp")))
+	      (err (str)
+		(if interactive (complain) (error str))))
     (let ((pos (if interactive
 		   (condition-case nil (scan) (scan-error (complain)))
 		 (scan))))
-      (unless pos
-	(if interactive (complain)
-	  (error "Sexp scan returned nil")))
+      (unless pos (err "Sexp scan returned nil"))
       (if (and (eq pos (point-max))
 	       (eq (save-excursion (syntax-ppss-context (syntax-ppss pos)))
 		   'comment))
-	  (if interactive (complain)
-	    (error "Sexp scan ended up inside comment"))
+	  (err "Sexp scan ended up inside comment")
 	(goto-char pos)))))
 
 (defun slurpbarf--skip-blanks-and-newline ()
