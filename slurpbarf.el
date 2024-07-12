@@ -141,9 +141,9 @@ interactive usage."
 
 (defun slurpbarf--lisp-forward (n interactive)
   "Move forward N expressions in Lisp Data.
-Work around unexpected behaviour with `scan-sexps' ending up
-inside a comment at end of buffer.  If INTERACTIVE is non-nil,
-report errors as appropriate for interactive usage."
+Handle the edge case of `scan-sexps' ending up inside a comment
+at the end of buffer.  If INTERACTIVE is non-nil, report errors
+as appropriate for interactive usage."
   (cl-labels ((scan ()
 		(scan-sexps (point) n))
 	      (complain ()
@@ -160,7 +160,7 @@ report errors as appropriate for interactive usage."
        ((and (eq pos (point-max))
 	     (eq (save-excursion (syntax-ppss-context (syntax-ppss pos)))
 		 'comment))
-	(err "Sexp scan ended up inside comment"))
+	(err "Inside comment"))
        (t (goto-char pos))))))
 
 (defun slurpbarf--skip-blanks-and-newline ()
