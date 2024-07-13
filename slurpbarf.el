@@ -155,7 +155,7 @@ non-nil, report errors as appropriate for interactive usage."
 		     (scan-error (complain)))
 		 (scan))))
       (cond
-       ((not pos) (point))
+       ((not pos) nil)
        ((and (= pos (point-max))
 	     (eq (save-excursion (syntax-ppss-context (syntax-ppss pos)))
 		 'comment))
