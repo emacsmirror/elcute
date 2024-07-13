@@ -162,7 +162,7 @@ non-nil, report errors as appropriate for interactive usage."
        ((and (eq pos (point-max))
 	     (eq (save-excursion (syntax-ppss-context (syntax-ppss pos)))
 		 'comment))
-	(err "Inside comment"))
+	(err "Unterminated comment"))
        (t (goto-char pos))))))
 
 (defun slurpbarf--skip-blanks-and-newline ()
