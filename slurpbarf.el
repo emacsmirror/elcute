@@ -148,9 +148,7 @@ non-nil, report errors as appropriate for interactive usage."
 		(scan-sexps (point) n))
 	      (complain ()
 		(user-error
-		 (if (> n 0) "No next sexp" "No previous sexp")))
-	      (err (str)
-		(if interactive (complain) (error str))))
+		 (if (> n 0) "No next sexp" "No previous sexp"))))
     (let ((pos (if interactive
 		   (condition-case nil
 		       (scan)
@@ -158,11 +156,12 @@ non-nil, report errors as appropriate for interactive usage."
 		 (scan))))
       (cond
        ((not pos)
-	(err (if (> n 0) "End of buffer" "Beginning of buffer")))
+	(if interactive (complain)
+	  (signal (if (> n 0) 'end-of-buffer 'beginning-of-buffer) nil)))
        ((and (eq pos (point-max))
 	     (eq (save-excursion (syntax-ppss-context (syntax-ppss pos)))
 		 'comment))
-	(err "Unterminated comment"))
+	(if interactive (complain) (error "Unterminated comment")))
        (t (goto-char pos))))))
 
 (defun slurpbarf--skip-blanks-and-newline ()
