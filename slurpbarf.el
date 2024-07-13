@@ -99,21 +99,28 @@ as appropriate for this kind of usage."
   (interactive "p\nd")
   (funcall slurpbarf-down-function arg interactive))
 
-(defun slurpbarf-forward-function (&optional arg interactive)
-  "Move forward ARG expressions.
+(defun slurpbarf-forward (&optional arg interactive)
+  "Move forward ARG expressions or as far as we can.
 With negative argument, move backward.  If INTERACTIVE is
 non-nil, as it is interactively, report errors as appropriate for
-this kind of usage."
-  (interactive "p\nd")
-  (funcall slurpbarf-forward-function arg interactive))
+this kind of usage.
 
-(defun slurpbarf-backward-function (&optional arg interactive)
-  "Move backward ARG expressions.
-With negative argument, move forward.  If INTERACTIVE is non-nil,
-as it is interactively, report errors as appropriate for this
-kind of usage."
+Return number of expressions moved."
   (interactive "p\nd")
-  (slurpbarf-forward-function (- arg) interactive))
+  (let ((sign (cl-signum arg))
+	(n (abs arg))
+	(i 0)
+	(pos (point)))
+    (while (and
+	    (< i n)
+	    (progn
+	      (condition-case nil
+		  (funcall slurpbarf-forward-function sign interactive)
+		(error nil))
+	      (/= pos (point))))
+      (cl-incf i)
+      (setq pos (point)))
+    (* sign i)))
 
 (defmacro slurpbarf--excurse (&rest body)
   (declare (indent 0))
@@ -155,8 +162,10 @@ non-nil, report errors as appropriate for interactive usage."
 		     (scan-error (complain)))
 		 (scan))))
       (cond
-       ((not pos) nil)
-       ((and (= pos (point-max))
+       ((not pos)
+	(if interactive (complain)
+	  (signal (if (> n 0) 'end-of-buffer 'beginning-of-buffer) nil)))
+       ((and (eq pos (point-max))
 	     (eq (save-excursion (syntax-ppss-context (syntax-ppss pos)))
 		 'comment))
 	(if interactive (complain) (error "Unterminated comment")))
@@ -280,7 +289,7 @@ Explanation in `ert' syntax (see info node `(ert)erts files'):
 	     (- (slurpbarf--excurse
 		  (slurpbarf-down-function (- sign)))
 		(point))))
-	(slurpbarf-forward-function arg interactive)
+	(slurpbarf-forward arg interactive)
 	(when (/= (point) origin)
 	  (let ((substring (slurpbarf--extract-region origin (point))))
 	    (forward-char offset)
@@ -324,7 +333,7 @@ Explanation in `ert' syntax (see info node `(ert)erts files'):
 		(point))))
 	(forward-char offset)
 	(let ((origin (point)))
-	  (slurpbarf-forward-function (- arg) interactive)
+	  (slurpbarf-forward (- arg) interactive)
 	  (when (/= (point) origin)
 	    (slurpbarf--skip-comments (- sign))
 	    (let ((substring (slurpbarf--extract-region origin (point))))
