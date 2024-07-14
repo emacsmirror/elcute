@@ -100,7 +100,7 @@ interactive usage."
 (defun slurpbarf--forward (n &optional interactive)
   "Move forward N expressions or as far as we can.
 With negative argument, move backward.  If INTERACTIVE is
-non-nil, stop moving on first error.
+non-nil, handle errors silently.
 
 Return signed number of expressions moved: positive forward,
 negative backward."
