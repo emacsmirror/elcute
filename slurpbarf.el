@@ -95,7 +95,6 @@ interactive usage."
 With positive argument, move forward; with negative, backward.
 If INTERACTIVE is non-nil, report errors as appropriate for
 interactive usage."
-  (interactive "p\nd")
   (funcall slurpbarf-down-function n interactive))
 
 (defun slurpbarf--forward (n &optional interactive)
@@ -103,7 +102,8 @@ interactive usage."
 With negative argument, move backward.  If INTERACTIVE is
 non-nil, report errors as appropriate for interactive usage.
 
-Return number of expressions moved."
+Return signed number of expressions moved: positive forward,
+negative backward.."
   (let ((sign (cl-signum n))
 	(i 0)
 	(pos (point)))
