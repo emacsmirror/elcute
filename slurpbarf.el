@@ -103,7 +103,7 @@ With negative argument, move backward.  If INTERACTIVE is
 non-nil, report errors as appropriate for interactive usage.
 
 Return signed number of expressions moved: positive forward,
-negative backward.."
+negative backward."
   (let ((sign (cl-signum n))
 	(i 0)
 	(pos (point)))
