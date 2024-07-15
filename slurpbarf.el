@@ -260,7 +260,7 @@ With negative argument, slurp backward.  If INTERACTIVE is
 non-nil, as it is interactively, report errors as appropriate for
 this kind of usage.
 
-((foo | bar) baz)
+ ((foo | bar) baz)
 ->
  ((foo | bar baz))"
   (interactive "p\nd")
