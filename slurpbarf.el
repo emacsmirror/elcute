@@ -273,7 +273,7 @@ Explanation in `ert' syntax (see info node `(ert)erts files'):
       (let ((origin (point))
 	    (offset
 	     (- (slurpbarf--excurse
-		  (slurpbarf--down (- sign)))
+		  (slurpbarf--down (- sign) interactive))
 		(point))))
 	(when (/= (slurpbarf--forward arg interactive) 0)
 	  (let ((substring (slurpbarf--extract-region origin (point))))
@@ -314,7 +314,7 @@ Explanation in `ert' syntax (see info node `(ert)erts files'):
       (slurpbarf--up sign interactive)
       (let ((offset
 	     (- (slurpbarf--excurse
-		  (slurpbarf--down (- sign)))
+		  (slurpbarf--down (- sign) interactive))
 		(point))))
 	(forward-char offset)
 	(let ((origin (point)))
@@ -340,8 +340,10 @@ Explanation in `ert' syntax (see info node `(ert)erts files'):
   (interactive "p\nd")
   (slurpbarf-barf-forward (- arg) interactive))
 
-(defun slurpbarf-splice ()
-  "Splice expression at point into containing expression.
+(defun slurpbarf-splice (&optional interactive)
+  "Splice expression at point into containing expression.  If
+INTERACTIVE is non-nil, as it is interactively, report errors as
+appropriate for this kind of usage.
 
 Explanation in `ert' syntax (see info node `(ert)erts files'):
 =-=
@@ -349,15 +351,15 @@ Explanation in `ert' syntax (see info node `(ert)erts files'):
 =-=
 (foo | bar)
 =-=-="
-  (interactive)
+  (interactive "d")
   (save-excursion
-    (let ((out0 (slurpbarf--excurse (slurpbarf--up -1)))
-	  (out1 (slurpbarf--excurse (slurpbarf--up +1)))
+    (let ((out0 (slurpbarf--excurse (slurpbarf--up -1 interactive)))
+	  (out1 (slurpbarf--excurse (slurpbarf--up +1 interactive)))
 	  in0 in1)
       (goto-char out0)
-      (setq in0 (slurpbarf--excurse (slurpbarf--down +1)))
+      (setq in0 (slurpbarf--excurse (slurpbarf--down +1 interactive)))
       (goto-char out1)
-      (setq in1 (slurpbarf--excurse (slurpbarf--down -1)))
+      (setq in1 (slurpbarf--excurse (slurpbarf--down -1 interactive)))
       (delete-region in1 out1)
       (slurpbarf--insert-space)
       (goto-char out0)
