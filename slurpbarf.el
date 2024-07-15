@@ -254,7 +254,7 @@ Do nothing if Electric Indent is disabled."
   (when slurpbarf-skip-comments-flag
     (forward-comment (* sign (buffer-size)))))
 
-(defun slurpbarf-slurp-forward (&optional arg interactive)
+(defun slurpbarf-slurp-forward (arg &optional interactive)
   "Slurp or ingest forward ARG expressions.
 With negative argument, slurp backward.  If INTERACTIVE is
 non-nil, as it is interactively, report errors as appropriate for
@@ -281,7 +281,7 @@ Explanation in `ert' syntax (see info node `(ert)erts files'):
 	    (slurpbarf--insert substring))
 	  (slurpbarf--indent 2))))))
 
-(defun slurpbarf-slurp-backward (&optional arg interactive)
+(defun slurpbarf-slurp-backward (arg &optional interactive)
   "Slurp or ingest backward ARG expressions.
 With negative argument, slurp forward.  If INTERACTIVE is
 non-nil, as it is interactively, report errors as appropriate for
@@ -289,14 +289,13 @@ this kind of usage.
 
 Explanation in `ert' syntax (see info node `(ert)erts files'):
 =-=
- (foo (bar | baz))
-=-=
+ (foo (bar | baz)) =-=
  ((foo bar | baz))
 =-=-="
   (interactive "p\nd")
   (slurpbarf-slurp-forward (- arg) interactive))
 
-(defun slurpbarf-barf-forward (&optional arg interactive)
+(defun slurpbarf-barf-forward (arg &optional interactive)
   "Barf or emit forward ARG expressions.
 With negative argument, barf backward.  If INTERACTIVE is
 non-nil, as it is interactively, report errors as appropriate for
@@ -325,7 +324,7 @@ Explanation in `ert' syntax (see info node `(ert)erts files'):
 	      (slurpbarf--insert substring))
 	    (slurpbarf--indent 2)))))))
 
-(defun slurpbarf-barf-backward (&optional arg interactive)
+(defun slurpbarf-barf-backward (arg &optional interactive)
   "Barf or emit backward ARG expressions.
 With negative argument, barf forward.  If INTERACTIVE is non-nil,
 as it is interactively, report errors as appropriate for this
