@@ -260,12 +260,9 @@ With negative argument, slurp backward.  If INTERACTIVE is
 non-nil, as it is interactively, report errors as appropriate for
 this kind of usage.
 
-Explanation in `ert' syntax (see info node `(ert)erts files'):
-=-=
- ((foo | bar) baz)
-=-=
- ((foo | bar baz))
-=-=-="
+((foo | bar) baz)
+->
+ ((foo | bar baz))"
   (interactive "p\nd")
   (let ((sign (cl-signum n)))
     (save-excursion
@@ -287,12 +284,9 @@ With negative argument, slurp forward.  If INTERACTIVE is
 non-nil, as it is interactively, report errors as appropriate for
 this kind of usage.
 
-Explanation in `ert' syntax (see info node `(ert)erts files'):
-=-=
  (foo (bar | baz))
-=-=
- ((foo bar | baz))
-=-=-="
+->
+ ((foo bar | baz))"
   (interactive "p\nd")
   (slurpbarf-slurp-forward (- n) interactive))
 
@@ -302,12 +296,9 @@ With negative argument, barf backward.  If INTERACTIVE is
 non-nil, as it is interactively, report errors as appropriate for
 this kind of usage.
 
-Explanation in `ert' syntax (see info node `(ert)erts files'):
-=-=
  ((foo | bar baz))
-=-=
- ((foo | bar) baz)
-=-=-="
+->
+ ((foo | bar) baz)"
   (interactive "p\nd")
   (let ((sign (cl-signum n)))
     (save-excursion
@@ -331,12 +322,9 @@ With negative argument, barf forward.  If INTERACTIVE is non-nil,
 as it is interactively, report errors as appropriate for this
 kind of usage.
 
-Explanation in `ert' syntax (see info node `(ert)erts files'):
-=-=
  ((foo bar | baz))
-=-=
- (foo (bar | baz))
-=-=-="
+->
+ (foo (bar | baz))"
   (interactive "p\nd")
   (slurpbarf-barf-forward (- n) interactive))
 
@@ -345,12 +333,9 @@ Explanation in `ert' syntax (see info node `(ert)erts files'):
 If INTERACTIVE is non-nil, as it is interactively, report errors
 as appropriate for this kind of usage.
 
-Explanation in `ert' syntax (see info node `(ert)erts files'):
-=-=
  ((foo | bar))
-=-=
- (foo | bar)
-=-=-="
+->
+ (foo | bar)"
   (interactive "d")
   (save-excursion
     (let ((out0 (slurpbarf--excurse (slurpbarf--up -1 interactive)))
