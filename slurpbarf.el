@@ -289,7 +289,8 @@ this kind of usage.
 
 Explanation in `ert' syntax (see info node `(ert)erts files'):
 =-=
- (foo (bar | baz)) =-=
+ (foo (bar | baz))
+=-=
  ((foo bar | baz))
 =-=-="
   (interactive "p\nd")
