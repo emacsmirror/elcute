@@ -262,9 +262,9 @@ this kind of usage.
 
 Explanation in `ert' syntax (see info node `(ert)erts files'):
 =-=
-((foo | bar) baz)
+ ((foo | bar) baz)
 =-=
-((foo | bar baz))
+ ((foo | bar baz))
 =-=-="
   (interactive "p\nd")
   (let ((sign (cl-signum arg)))
@@ -289,9 +289,9 @@ this kind of usage.
 
 Explanation in `ert' syntax (see info node `(ert)erts files'):
 =-=
-(foo (bar | baz))
+ (foo (bar | baz))
 =-=
-((foo bar | baz))
+ ((foo bar | baz))
 =-=-="
   (interactive "p\nd")
   (slurpbarf-slurp-forward (- arg) interactive))
@@ -304,9 +304,9 @@ this kind of usage.
 
 Explanation in `ert' syntax (see info node `(ert)erts files'):
 =-=
-((foo | bar baz))
+ ((foo | bar baz))
 =-=
-((foo | bar) baz)
+ ((foo | bar) baz)
 =-=-="
   (interactive "p\nd")
   (let ((sign (cl-signum arg)))
@@ -333,23 +333,23 @@ kind of usage.
 
 Explanation in `ert' syntax (see info node `(ert)erts files'):
 =-=
-((foo bar | baz))
+ ((foo bar | baz))
 =-=
-(foo (bar | baz))
+ (foo (bar | baz))
 =-=-="
   (interactive "p\nd")
   (slurpbarf-barf-forward (- arg) interactive))
 
 (defun slurpbarf-splice (&optional interactive)
-  "Splice expression at point into containing expression.  If
-INTERACTIVE is non-nil, as it is interactively, report errors as
-appropriate for this kind of usage.
+  "Splice expression at point into containing expression.
+If INTERACTIVE is non-nil, as it is interactively, report errors
+as appropriate for this kind of usage.
 
 Explanation in `ert' syntax (see info node `(ert)erts files'):
 =-=
-((foo | bar))
+ ((foo | bar))
 =-=
-(foo | bar)
+ (foo | bar)
 =-=-="
   (interactive "d")
   (save-excursion
