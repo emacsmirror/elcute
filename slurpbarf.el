@@ -108,11 +108,18 @@ return nil; if nil, signal an error."
 	(error "Unterminated comment"))
     t))
 
+(defmacro slurpbarf--silence-errors (interactive &rest body)
+  (declare (indent 1))
+  `(if ,interactive
+       (condition-case nil
+	   (progn ,@body)
+	 (error nil))
+     ,@body))
+
 (defun slurpbarf--forward (n &optional interactive)
   "Move forward N expressions or as far as we can.
 With negative argument, move backward.  If INTERACTIVE is
 non-nil, handle errors silently.
-
 Return signed number of expressions moved: positive forward,
 negative backward."
   (let ((sign (cl-signum n))
@@ -121,11 +128,7 @@ negative backward."
     (while (and
 	    (/= i n)
 	    (progn
-	      (if interactive
-		  (condition-case nil
-		      (progn
-			(funcall slurpbarf-forward-function sign))
-		    (error nil))
+	      (slurpbarf--silence-errors interactive
 		(funcall slurpbarf-forward-function sign))
 	      (/= pos (point)))
 	    (slurpbarf--beware-unterminated-comment interactive))
@@ -182,7 +185,7 @@ into user errors."
      (if ,interactive
 	 (condition-case err (progn ,@body)
 	   (error (signal 'user-error (cdr err))))
-       (progn ,@body))
+       ,@body)
      (slurpbarf--skip-blanks-and-newline)))
 
 (defun slurpbarf--nxml-up (n interactive)
