@@ -97,6 +97,17 @@ If INTERACTIVE is non-nil, report errors as appropriate for
 interactive usage."
   (funcall slurpbarf-down-function n interactive))
 
+(defun slurpbarf--beware-unterminated-comment (interactive)
+  "Check that point is not at end of buffer inside a comment.
+Return `t' if it is not.  Otherwise, if INTERACTIVE is non-nil,
+return nil; if nil, signal an error."
+  (if (and (eq (point) (point-max))
+	   (eq (syntax-ppss-context (syntax-ppss)) 'comment))
+      (if interactive
+	  nil
+	(error "Unterminated comment"))
+    t))
+
 (defun slurpbarf--forward (n &optional interactive)
   "Move forward N expressions or as far as we can.
 With negative argument, move backward.  If INTERACTIVE is
@@ -112,10 +123,12 @@ negative backward."
 	    (progn
 	      (if interactive
 		  (condition-case nil
-		      (funcall slurpbarf-forward-function sign)
+		      (progn
+			(funcall slurpbarf-forward-function sign))
 		    (error nil))
 		(funcall slurpbarf-forward-function sign))
-	      (/= pos (point))))
+	      (/= pos (point)))
+	    (slurpbarf--beware-unterminated-comment interactive))
       (cl-incf i sign)
       (setq pos (point)))
     i))
@@ -146,16 +159,12 @@ interactive usage."
 
 (defun slurpbarf--lisp-forward (n)
   "Move forward N expressions in Lisp Data.
-Handle the edge case of `scan-sexps' ending up inside an
-unterminated comment at the end of buffer."
+Behave better than `forward-sexp' at beginning and end of buffer
+by not jumping there over comments even while there's no sexp to
+be found."
   (let ((pos (scan-sexps (point) n)))
-    (cond
-     ((not pos) pos)
-     ((and (eq pos (point-max))
-	   (eq (save-excursion (syntax-ppss-context (syntax-ppss pos)))
-	       'comment))
-      (error "Unterminated comment"))
-     (t (goto-char pos)))))
+    (if (not pos) pos
+      (goto-char pos))))
 
 (defun slurpbarf--skip-blanks-and-newline ()
   "Skip blanks and a newline.
