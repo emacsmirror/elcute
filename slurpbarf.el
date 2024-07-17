@@ -143,9 +143,10 @@ negative backward."
      (point)))
 
 (defun slurpbarf--break-out-string ()
-  (when (eq (syntax-ppss-context (syntax-ppss)) 'string)
-    (skip-syntax-backward "^\"")
-    (backward-char)))
+  (let ((syntax (syntax-ppss)))
+    (when (eq (syntax-ppss-context syntax) 'string)
+      (let ((string-start (nth 8 syntax)))
+	(goto-char string-start)))))
 
 (defun slurpbarf--lisp-up (n interactive)
   "Move up N levels of expressions in Lisp Data.
