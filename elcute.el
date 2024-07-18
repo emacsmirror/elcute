@@ -54,13 +54,27 @@ with their derivatives."
   (when (derived-mode-p 'lisp-data-mode)
     (setq-local
      elcute-creep-forward-function #'elcute--lisp-creep-forward
-     elcute-creep-backward-function #'elcute--lisp-creep-backward))
+     elcute-creep-backward-function #'elcute--lisp-creep-backward
+     elcute-indent-function #'elcute--lisp-indent))
   (when (derived-mode-p 'nxml-mode)
     (setq-local
      elcute-stop-predicate #'elcute--nxml-stop-p
      elcute-context-function #'elcute--nxml-context
      elcute-string-skip-function #'elcute--nxml-string-skip
      elcute-error-inside-comment-flag nil)))
+
+(defvar elcute-indent-function #'indent-according-to-mode
+  "Indents line according to mode.")
+
+(defun elcute--break-out-comment ()
+  (let ((syntax (syntax-ppss)))
+    (when (eq (syntax-ppss-context syntax) 'comment)
+      (let ((comment-start (nth 8 syntax)))
+	(goto-char comment-start)))))
+
+(defun elcute--lisp-indent ()
+  (indent-according-to-mode)
+  (elcute--break-out-comment))
 
 (defvar elcute-stop-predicate (cl-constantly nil)
   "Should we stop at tentative position?")
@@ -257,7 +271,7 @@ With negative ARG, moves mark tentatively -ARG lines backward."
 
 (defun elcute--indent ()
   (when (elcute--indent-p)
-    (indent-according-to-mode)))
+    (funcall elcute-indent-function)))
 
 (defun elcute--skip-indentation (arg)
   (when (and (elcute--indent-p)
