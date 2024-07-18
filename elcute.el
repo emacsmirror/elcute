@@ -116,7 +116,7 @@ Instead of moving full nodes, stop if `xmltok-type' is `'data' or
       context)))
 
 (defvar elcute-string-skip-function
-  #'elcute--lisp-data-string-skip
+  #'elcute--lisp-string-skip
   "Skips within syntactic string.")
 
 (defun elcute-string-skip-function (sign limit)
@@ -126,7 +126,7 @@ negative, backward.  LIMIT specifies position beyond which not to
 skip."
   (funcall elcute-string-skip-function sign limit))
 
-(defun elcute--lisp-data-string-skip (sign limit)
+(defun elcute--lisp-string-skip (sign limit)
   (cl-case (cl-signum sign)
     (+1 (skip-syntax-forward "^\"" limit))
     (-1 (skip-syntax-backward "^\"" limit))))
