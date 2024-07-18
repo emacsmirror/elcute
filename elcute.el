@@ -54,27 +54,13 @@ with their derivatives."
   (when (derived-mode-p 'lisp-data-mode)
     (setq-local
      elcute-creep-forward-function #'elcute--lisp-creep-forward
-     elcute-creep-backward-function #'elcute--lisp-creep-backward
-     elcute-indent-function #'elcute--lisp-indent))
+     elcute-creep-backward-function #'elcute--lisp-creep-backward))
   (when (derived-mode-p 'nxml-mode)
     (setq-local
      elcute-stop-predicate #'elcute--nxml-stop-p
      elcute-context-function #'elcute--nxml-context
      elcute-string-skip-function #'elcute--nxml-string-skip
      elcute-error-inside-comment-flag nil)))
-
-(defvar elcute-indent-function #'indent-according-to-mode
-  "Indents line according to mode.")
-
-(defun elcute--break-out-comment ()
-  (let ((syntax (syntax-ppss)))
-    (when (eq (syntax-ppss-context syntax) 'comment)
-      (let ((comment-start (nth 8 syntax)))
-	(goto-char comment-start)))))
-
-(defun elcute--lisp-indent ()
-  (indent-according-to-mode)
-  (elcute--break-out-comment))
 
 (defvar elcute-stop-predicate (cl-constantly nil)
   "Should we stop at tentative position?")
@@ -269,13 +255,16 @@ With negative ARG, moves mark tentatively -ARG lines backward."
   (and electric-indent-mode
        (not electric-indent-inhibit)))
 
-(defun elcute--indent ()
+(defun elcute--skip-indentation ()
   (when (elcute--indent-p)
-    (funcall elcute-indent-function)))
+    (goto-char
+     (max (point)
+	  (elcute--excurse
+	    (beginning-of-line)
+	    (skip-chars-forward "[:blank:]"))))))
 
-(defun elcute--skip-indentation (arg)
-  (when (and (elcute--indent-p)
-	     (> (or arg 1) 0))
+(defun elcute--skip-whitespace ()
+  (when (elcute--indent-p)
     (skip-chars-forward "[:blank:]")))
 
 (defun elcute-kill-line (&optional arg)
@@ -291,12 +280,12 @@ till beginning of line.
 With negative ARG, kills tentatively -ARG lines backward,
 till beginning of line."
   (interactive "P")
+  (elcute--skip-indentation)
   (save-excursion
     (let ((origin (point)))
       (elcute-forward-line arg)
-      (elcute--skip-indentation arg)
-      (kill-region origin (point))))
-  (elcute--indent))
+      (elcute--skip-whitespace)
+      (kill-region origin (point)))))
 
 (provide 'elcute)
 
