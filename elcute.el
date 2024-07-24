@@ -192,25 +192,25 @@ to beginning of line."
   (interactive "P")
   ;; nXML mode happens to work without taking `min' and `max' inside
   ;; text nodes, but not inside comment nodes.
-  (cl-labels
-      ((move (sign min-or-max creep)
-	 (let ((limit (elcute--excurse (elcute--tentative-forward-line arg)))
-	       (context (elcute-context-function)))
-	   (cond
-	    ((eq context 'string)
-	     (elcute-string-skip-function sign limit))
-	    ((and (eq context 'comment)
-		  elcute-error-inside-comment-flag)
-	     (user-error "Inside comment"))
-	    (t
-	     (let ((pos (elcute--excurse (funcall creep limit))))
-	       (goto-char
-		(if (elcute-stop-predicate)
-		    (funcall min-or-max pos limit)
-		  pos))))))))
-    (if (> (or arg 1) 0)
-	(move +1 #'min elcute-creep-forward-function)
-      (move -1 #'max elcute-creep-backward-function))))
+  (let ((sign (if (< 0 (or arg 1)) +1 -1)))
+    (cl-multiple-value-bind (min-or-max creep)
+	(cl-case sign
+	  (+1 (cl-values #'min elcute-creep-forward-function))
+	  (-1 (cl-values #'max elcute-creep-backward-function)))
+      (let ((limit (elcute--excurse (elcute--tentative-forward-line arg)))
+	    (context (elcute-context-function)))
+	(cond
+	 ((eq context 'string)
+	  (elcute-string-skip-function sign limit))
+	 ((and (eq context 'comment)
+	       elcute-error-inside-comment-flag)
+	  (user-error "Inside comment"))
+	 (t
+	  (let ((pos (elcute--excurse (funcall creep limit))))
+	    (goto-char
+	     (if (elcute-stop-predicate)
+		 (funcall min-or-max pos limit)
+	       pos)))))))))
 
 (defun elcute-mark-line (&optional arg allow-extend)
   "Mark ARG lines subject to adjustments.
