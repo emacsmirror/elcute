@@ -51,8 +51,9 @@ When Slurpbarf mode is enabled, various buffer-local variables
 are set according to major mode, affecting the commands bound in
 the mode map, and the command `slurpbarf-splice'.
 
-Supported major modes are `lisp-data-mode' and `nxml-mode';
-however, the default Lisp Data behavior may be useful globally."
+Supported major modes are Lisp Data mode and nXML mode; in
+addition, the default Lisp Data behavior may be useful globally:
+see `global-slurpbarf-mode'."
   :keymap (define-keymap
 	    "C-)" #'slurpbarf-slurp-forward
 	    "C-(" #'slurpbarf-slurp-backward
