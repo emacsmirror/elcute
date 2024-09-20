@@ -47,8 +47,7 @@ When Elcute mode is enabled, `kill-line' is remapped to
 according to major mode, affecting the commands
 `elcute-forward-line', `elcute-mark-line' and `elcute-kill-line'.
 
-Supported major modes are `lisp-data-mode' and `nxml-mode' along
-with their derivatives."
+Supported major modes are `lisp-data-mode' and `nxml-mode'."
   :keymap (define-keymap
 	    "<remap> <kill-line>" #'elcute-kill-line)
   (when (derived-mode-p 'lisp-data-mode)

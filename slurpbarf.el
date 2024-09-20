@@ -51,9 +51,8 @@ When Slurpbarf mode is enabled, various buffer-local variables
 are set according to major mode, affecting the commands bound in
 the mode map, and the command `slurpbarf-splice'.
 
-Supported major modes are `lisp-data-mode' and `nxml-mode' along
-with their derivatives; however, the default Lisp Data behavior
-may be useful globally."
+Supported major modes are `lisp-data-mode' and `nxml-mode';
+however, the default Lisp Data behavior may be useful globally."
   :keymap (define-keymap
 	    "C-)" #'slurpbarf-slurp-forward
 	    "C-(" #'slurpbarf-slurp-backward
@@ -99,7 +98,7 @@ interactive usage."
 
 (defun slurpbarf--beware-unterminated-comment (interactive)
   "Check that point is not at end of buffer inside a comment.
-Return `t' if it is not.  Otherwise, if INTERACTIVE is non-nil,
+Return t if it is not.  Otherwise, if INTERACTIVE is non-nil,
 return nil; if nil, signal an error."
   (if (and (eq (point) (point-max))
 	   (eq (syntax-ppss-context (syntax-ppss)) 'comment))
