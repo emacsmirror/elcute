@@ -351,13 +351,15 @@ as appropriate for this kind of usage.
  (foo | bar)"
   (interactive "d")
   (save-excursion
-    (let ((out0 (slurpbarf--excurse (slurpbarf--up -1 interactive)))
-	  (out1 (slurpbarf--excurse (slurpbarf--up +1 interactive)))
-	  in0 in1)
-      (goto-char out0)
-      (setq in0 (slurpbarf--excurse (slurpbarf--down +1 interactive)))
+    (let* ((out0 (slurpbarf--excurse (slurpbarf--up -1 interactive)))
+	   (out1 (slurpbarf--excurse (slurpbarf--up +1 interactive)))
+	   (in0 (slurpbarf--excurse
+		  (goto-char out0)
+		  (slurpbarf--down +1 interactive)))
+	   (in1 (slurpbarf--excurse
+		  (goto-char out1)
+		  (slurpbarf--down -1 interactive))))
       (goto-char out1)
-      (setq in1 (slurpbarf--excurse (slurpbarf--down -1 interactive)))
       (delete-region in1 out1)
       (slurpbarf--insert-space)
       (goto-char out0)
