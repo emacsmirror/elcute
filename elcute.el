@@ -1,6 +1,6 @@
 ;;; elcute.el --- Commands for marking and killing lines electrically  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2023-2024 Vili Aapro
+;; Copyright (C) 2023-2025 Vili Aapro
 
 ;; Author: Vili Aapro
 ;; Keywords: convenience
@@ -30,14 +30,47 @@
 ;; Lines are marked and killed rounding up to whole expressions,
 ;; without escaping any containing expression.
 
-;; Supported major modes are Lisp Data mode and nXML mode.  The
-;; library is scarcely useful in other modes; in particular, the
-;; commands do not work in C mode.
+;; Supported major modes are Lisp Data mode, Inferior Lisp mode, nXML
+;; mode, SML mode and Inferior SML mode.  The library is scarcely
+;; useful in other modes; in particular, the commands do not work in C
+;; mode.
 
 ;;; Code:
 
 (require 'cl-lib)
 (require 'nxml-mode)
+
+(defvar elcute-init-alist
+  `((lisp-data-mode ,#'elcute--lisp-init)
+    (inferior-lisp-mode ,#'elcute--lisp-init)
+    (nxml-mode ,#'elcute--nxml-init)
+    (sml-mode ,#'elcute--sml-init)
+    (inferior-sml-mode ,#'elcute--sml-init))
+  "Associates modes with lists of initialization functions.")
+
+(defun elcute--init (alist)
+  (dolist (pair alist)
+    (cl-destructuring-bind (mode . functions) pair
+      (when (derived-mode-p mode)
+	(dolist (f functions)
+	  (funcall f))))))
+
+(defun elcute--lisp-init ()
+  (setq-local
+   elcute-creep-forward-function #'elcute--lisp-creep-forward
+   elcute-creep-backward-function #'elcute--lisp-creep-backward))
+
+(defun elcute--nxml-init ()
+  (setq-local
+   elcute-stop-predicate #'elcute--nxml-stop-p
+   elcute-context-function #'elcute--nxml-context
+   elcute-string-skip-function #'elcute--nxml-string-skip
+   elcute-error-inside-comment-flag nil))
+
+(defun elcute--sml-init ()
+  (setq-local
+   elcute-creep-forward-function #'elcute--sml-creep-forward
+   elcute-creep-backward-function #'elcute--sml-creep-backward))
 
 ;;;###autoload
 (define-minor-mode elcute-mode
@@ -48,19 +81,11 @@ When Elcute mode is enabled, `kill-line' is remapped to
 according to major mode, affecting the commands
 `elcute-forward-line', `elcute-mark-line' and `elcute-kill-line'.
 
-Supported major modes are Lisp Data mode and nXML mode."
+Supported major modes are Lisp Data mode, Inferior Lisp mode, nXML mode,
+SML mode and Inferior SML mode."
   :keymap (define-keymap
 	    "<remap> <kill-line>" #'elcute-kill-line)
-  (when (derived-mode-p 'lisp-data-mode)
-    (setq-local
-     elcute-creep-forward-function #'elcute--lisp-creep-forward
-     elcute-creep-backward-function #'elcute--lisp-creep-backward))
-  (when (derived-mode-p 'nxml-mode)
-    (setq-local
-     elcute-stop-predicate #'elcute--nxml-stop-p
-     elcute-context-function #'elcute--nxml-context
-     elcute-string-skip-function #'elcute--nxml-string-skip
-     elcute-error-inside-comment-flag nil)))
+  (elcute--init elcute-init-alist))
 
 (defvar elcute-stop-predicate (cl-constantly nil)
   "Should we stop at tentative position?")
@@ -113,9 +138,19 @@ skip."
   (funcall elcute-string-skip-function sign limit))
 
 (defun elcute--lisp-string-skip (sign limit)
-  (cl-case (cl-signum sign)
-    (+1 (skip-syntax-forward "^\"" limit))
-    (-1 (skip-syntax-backward "^\"" limit))))
+  (let ((syntax (syntax-ppss)))
+    (cl-case (cl-signum sign)
+      (+1 (goto-char
+	   (min limit
+		(elcute--excurse
+		  (goto-char (nth 8 syntax))
+		  (forward-sexp)
+		  (backward-char)))))
+      (-1 (goto-char
+	   (max limit
+		(elcute--excurse
+		  (goto-char (nth 8 syntax))
+		  (forward-char))))))))
 
 (defun elcute--nxml-string-skip (sign limit)
   (let* ((terminator (nth 3 (syntax-ppss)))
@@ -169,6 +204,18 @@ skip."
 	      (or (> 0 (skip-chars-backward "[:blank:]" limit))
 		  (forward-comment -1)
 		  (> 0 (skip-chars-backward "\n" limit))
+		  (elcute--try #'backward-sexp)))))
+
+(defun elcute--sml-creep-forward (limit)
+  (while (and (< (point) limit)
+	      (or (< 0 (skip-chars-forward "[:blank:]\n" limit))
+		  (forward-comment +1)
+		  (elcute--try #'forward-sexp)))))
+
+(defun elcute--sml-creep-backward (limit)
+  (while (and (> (point) limit)
+	      (or (> 0 (skip-chars-backward "[:blank:]\n" limit))
+		  (forward-comment -1)
 		  (elcute--try #'backward-sexp)))))
 
 (defmacro elcute--excurse (&rest body)

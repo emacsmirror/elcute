@@ -1,6 +1,6 @@
 ;;; slurpbarf.el --- Commands for slurping and barfing  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2023-2024 Vili Aapro
+;; Copyright (C) 2023-2025 Vili Aapro
 
 ;; Author: Vili Aapro
 ;; Keywords: convenience
@@ -41,6 +41,25 @@
 (require 'cl-lib)
 (require 'nxml-mode)
 
+(defvar slurpbarf-init-alist
+  `((nxml-mode ,#'slurpbarf--nxml-init))
+  "Associates modes with lists of initialization functions.")
+
+(defun slurpbarf--init (alist)
+  (dolist (pair alist)
+    (cl-destructuring-bind (mode . functions) pair
+      (when (derived-mode-p mode)
+	(dolist (f functions)
+	  (funcall f))))))
+
+(defun slurpbarf--nxml-init ()
+  (setq-local
+   slurpbarf-insert-space-flag nil
+   slurpbarf-skip-comments-flag nil
+   slurpbarf-up-function #'slurpbarf--nxml-up
+   slurpbarf-down-function #'slurpbarf--nxml-down
+   slurpbarf-forward-function #'slurpbarf--nxml-forward))
+
 ;;;###autoload
 (define-minor-mode slurpbarf-mode
   "Toggle slurping and barfing (Slurpbarf mode) in the current buffer.
@@ -57,13 +76,7 @@ see `global-slurpbarf-mode'."
 	    "C-(" #'slurpbarf-slurp-backward
 	    "C-}" #'slurpbarf-barf-forward
 	    "C-{" #'slurpbarf-barf-backward)
-  (when (derived-mode-p 'nxml-mode)
-    (setq-local
-     slurpbarf-insert-space-flag nil
-     slurpbarf-skip-comments-flag nil
-     slurpbarf-up-function #'slurpbarf--nxml-up
-     slurpbarf-down-function #'slurpbarf--nxml-down
-     slurpbarf-forward-function #'slurpbarf--nxml-forward)))
+  (slurpbarf--init slurpbarf-init-alist))
 
 ;;;###autoload
 (define-globalized-minor-mode global-slurpbarf-mode
