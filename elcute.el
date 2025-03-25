@@ -5,7 +5,7 @@
 ;; Author: Vili Aapro
 ;; Keywords: convenience
 ;; Package-Requires: ((emacs "29.1"))
-;; Version: 1.0
+;; Version: 1.1
 ;; URL: https://codeberg.org/vilij/slurpbarf-elcute
 
 ;; This file is part of Elcute.
