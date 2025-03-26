@@ -1,6 +1,6 @@
 # slurpbarf-elcute
 
-Slurpbarf and Elcute are Emacs minor modes together creating a Paredit-like experience in Lisp, nXML and SML modes.
+Slurpbarf and Elcute are Emacs minor modes together creating a Paredit-like experience in Lisp Data and nXML modes.
 
 Slurpbarf binds `C-(` and `C-)` to slurping commands, and `C-{` and `C-}` to barfing commands.
 
@@ -15,8 +15,6 @@ Slurpbarf works reasonably well everywhere, so a global mode is provided.  I per
 (add-hook 'inferior-lisp-mode-hook #'elcute-mode)
 (add-hook 'eval-expression-minibuffer-setup-hook #'elcute-mode)
 (add-hook 'nxml-mode-hook #'elcute-mode)
-(add-hook 'sml-mode-hook #'elcute-mode)
-(add-hook 'inferior-sml-mode-hook #'elcute-mode)
 ```
 
 Enjoy!
