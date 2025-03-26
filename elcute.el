@@ -138,18 +138,20 @@ skip."
   (funcall elcute-string-skip-function sign limit))
 
 (defun elcute--lisp-string-skip (sign limit)
-  (let ((string-start (nth 8 (syntax-ppss))))
+  (let ((syntax (syntax-ppss)))
     (cl-case (cl-signum sign)
       (+1 (goto-char
 	   (min limit
 		(elcute--excurse
-		  (goto-char string-start)
-		  (forward-sexp)
-		  (backward-char)))))
+		  (goto-char (nth 8 syntax))
+		  (condition-case nil
+		      (forward-sexp)
+		    (error (goto-char (point-max)))
+		    (:success (backward-char)))))))
       (-1 (goto-char
 	   (max limit
 		(elcute--excurse
-		  (goto-char string-start)
+		  (goto-char (nth 8 syntax))
 		  (forward-char))))))))
 
 (defun elcute--nxml-string-skip (sign limit)
