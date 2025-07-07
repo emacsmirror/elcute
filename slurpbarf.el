@@ -43,7 +43,7 @@
 
 (defvar slurpbarf-init-alist
   `((nxml-mode ,#'slurpbarf--nxml-init))
-  "Associates modes with lists of initialization functions.")
+  "Associates major modes with lists of initialization functions.")
 
 (defun slurpbarf--init (alist)
   (dolist (pair alist)

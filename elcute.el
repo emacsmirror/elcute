@@ -41,7 +41,7 @@
 
 (defvar elcute-init-alist
   `((nxml-mode ,#'elcute--nxml-init))
-  "Associates modes with lists of initialization functions.")
+  "Associates major modes with lists of initialization functions.")
 
 (defun elcute--init (alist)
   (dolist (pair alist)
