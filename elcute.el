@@ -39,6 +39,12 @@
 (require 'cl-lib)
 (require 'nxml-mode)
 
+(defmacro elcute--excurse (&rest body)
+  (declare (indent 0))
+  `(save-excursion
+     ,@body
+     (point)))
+
 (defvar elcute-init-alist
   `((nxml-mode ,#'elcute--nxml-init))
   "Associates major modes with lists of initialization functions.")
@@ -193,12 +199,6 @@ skip."
   (while (and (> (point) limit)
 	      (or (> 0 (skip-chars-backward "[:blank:]\n" limit))
 		  (elcute--try #'backward-sexp)))))
-
-(defmacro elcute--excurse (&rest body)
-  (declare (indent 0))
-  `(save-excursion
-     ,@body
-     (point)))
 
 (defun elcute-forward-line (&optional arg)
   "Move forward ARG lines subject to adjustments.

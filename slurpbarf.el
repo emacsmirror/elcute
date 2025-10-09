@@ -41,6 +41,32 @@
 (require 'cl-lib)
 (require 'nxml-mode)
 
+(defmacro slurpbarf--excurse (&rest body)
+  (declare (indent 0))
+  `(save-excursion
+     ,@body
+     (point)))
+
+(defmacro slurpbarf--silence-errors (interactive &rest body)
+  (declare (indent 1))
+  `(if ,interactive
+       (condition-case nil
+	   (progn ,@body)
+	 (error nil))
+     ,@body))
+
+(defmacro slurpbarf--nxml-motion (interactive &rest body)
+  "Tame nXML-mode motion by skipping spaces and translating errors.
+If INTERACTIVE is non-nil, translate errors raised inside BODY
+into user errors."
+  (declare (indent 1))
+  `(progn
+     (if ,interactive
+	 (condition-case err (progn ,@body)
+	   (error (signal 'user-error (cdr err))))
+       ,@body)
+     (slurpbarf--skip-blanks-and-newline)))
+
 (defvar slurpbarf-init-alist
   `((nxml-mode ,#'slurpbarf--nxml-init))
   "Associates major modes with lists of initialization functions.")
@@ -119,14 +145,6 @@ return nil; if nil, signal an error."
 	(error "Unterminated comment"))
     t))
 
-(defmacro slurpbarf--silence-errors (interactive &rest body)
-  (declare (indent 1))
-  `(if ,interactive
-       (condition-case nil
-	   (progn ,@body)
-	 (error nil))
-     ,@body))
-
 (defun slurpbarf--forward (n &optional interactive)
   "Move forward N expressions or as far as we can.
 With negative argument, move backward.  If INTERACTIVE is
@@ -146,12 +164,6 @@ negative backward."
       (cl-incf i sign)
       (setq pos (point)))
     i))
-
-(defmacro slurpbarf--excurse (&rest body)
-  (declare (indent 0))
-  `(save-excursion
-     ,@body
-     (point)))
 
 (defun slurpbarf--break-out-string ()
   (let ((syntax (syntax-ppss)))
@@ -187,18 +199,6 @@ For stylistic reasons, we consider such trailing whitespace an
 inseparable part of an XML tag."
   (skip-chars-forward "[:blank:]")
   (skip-chars-forward "\n" (1+ (point))))
-
-(defmacro slurpbarf--nxml-motion (interactive &rest body)
-  "Tame nXML-mode motion by skipping spaces and translating errors.
-If INTERACTIVE is non-nil, translate errors raised inside BODY
-into user errors."
-  (declare (indent 1))
-  `(progn
-     (if ,interactive
-	 (condition-case err (progn ,@body)
-	   (error (signal 'user-error (cdr err))))
-       ,@body)
-     (slurpbarf--skip-blanks-and-newline)))
 
 (defun slurpbarf--nxml-up (n interactive)
   (slurpbarf--nxml-motion interactive
