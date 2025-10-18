@@ -3,7 +3,7 @@
 ;; Copyright (C) 2023-2025 Vili Aapro
 
 ;; Author: Vili Aapro
-;; Keywords: convenience
+;; Keywords: convenience, lisp, nxml
 ;; Package-Requires: ((emacs "29.1"))
 ;; Version: 1.1
 ;; URL: https://codeberg.org/vilij/slurpbarf-elcute
@@ -371,7 +371,7 @@ as appropriate for this kind of usage.
 		  (goto-char out1)
 		  (slurpbarf--down -1 interactive))))
       (goto-char out1)
-      (slurpbarf--unindent (point))
+      (slurpbarf--unindent (point) )
       (delete-region in1 out1)
       (slurpbarf--insert-space)
       (goto-char out0)
