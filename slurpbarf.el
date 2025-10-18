@@ -3,7 +3,7 @@
 ;; Copyright (C) 2023-2025 Vili Aapro
 
 ;; Author: Vili Aapro
-;; Keywords: convenience, lisp, nxml
+;; Keywords: convenience, lisp, XML
 ;; Package-Requires: ((emacs "29.1"))
 ;; Version: 1.1
 ;; URL: https://codeberg.org/vilij/slurpbarf-elcute
