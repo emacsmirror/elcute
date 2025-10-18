@@ -371,6 +371,7 @@ as appropriate for this kind of usage.
 		  (goto-char out1)
 		  (slurpbarf--down -1 interactive))))
       (goto-char out1)
+      (slurpbarf--unindent (point))
       (delete-region in1 out1)
       (slurpbarf--insert-space)
       (goto-char out0)
