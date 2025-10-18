@@ -375,6 +375,7 @@ as appropriate for this kind of usage.
       (delete-region in1 out1)
       (slurpbarf--insert-space)
       (goto-char out0)
+      (slurpbarf--unindent in0)
       (delete-region in0 out0)
       (slurpbarf--insert-space)))
   (slurpbarf--indent 1))
