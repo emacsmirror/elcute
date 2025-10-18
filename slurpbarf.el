@@ -232,12 +232,14 @@ Indent is disabled."
 	      (right (excurse n (point-max))))
 	  (indent-region left right))))))
 
-(defun slurpbarf--unindent (pos)
+(defun slurpbarf--unindent (&optional pos)
   "Delete horizontal whitespace after POS if POS starts a line.
-Do nothing if Electric Indent is disabled."
+If POS is nil, use point instead.  Do nothing if Electric Indent is
+disabled."
   (when (slurpbarf--indent-p)
     (save-excursion
-      (goto-char pos)
+      (when pos
+	(goto-char pos))
       (when (bolp)
 	(let ((origin (point)))
 	  (skip-chars-forward "[:blank:]")
@@ -371,11 +373,11 @@ as appropriate for this kind of usage.
 		  (goto-char out1)
 		  (slurpbarf--down -1 interactive))))
       (goto-char out1)
-      (slurpbarf--unindent out1)
+      (slurpbarf--unindent)
       (delete-region in1 out1)
       (slurpbarf--insert-space)
       (goto-char in0)
-      (slurpbarf--unindent in0)
+      (slurpbarf--unindent)
       (delete-region in0 out0)
       (slurpbarf--insert-space)))
   (slurpbarf--indent 1))
