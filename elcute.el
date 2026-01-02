@@ -115,7 +115,8 @@ Instead of moving full nodes, stop if `xmltok-type' is `'data' or
 	    (start-tag context)
 	    (empty-element context)
 	    (data nil)
-	    (t (user-error "Inside unrecognized token"))))
+	    (t (user-error "Point is inside a %s"
+			   (nxml-token-type-friendly-name xmltok-type)))))
       context)))
 
 (defvar elcute-string-skip-function
