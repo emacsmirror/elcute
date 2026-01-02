@@ -115,7 +115,7 @@ Instead of moving full nodes, stop if `xmltok-type' is `'data' or
 	    (start-tag context)
 	    (empty-element context)
 	    (data nil)
-	    (t (user-error "Point is inside a %s"
+	    (t (user-error "Inside a %s"
 			   (nxml-token-type-friendly-name xmltok-type)))))
       context)))
 
@@ -228,7 +228,7 @@ to beginning of line."
 	  (elcute-string-skip-function sign limit))
 	 ((and (eq context 'comment)
 	       elcute-error-inside-comment-flag)
-	  (user-error "Inside comment"))
+	  (user-error "Inside a comment"))
 	 (t
 	  (let ((pos (elcute--excurse (funcall creep limit))))
 	    (goto-char
