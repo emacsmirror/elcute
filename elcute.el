@@ -89,11 +89,11 @@ Supported major modes are Lisp Data mode and nXML mode."
 (defun elcute--nxml-stop-p ()
   "Refine motion in `elcute-forward-line' in nXML mode to lines.
 
-Instead of moving full nodes, stop if `xmltok-type' is `'data' or
-`'comment'.  In nXML mode, `elcute--nxml-creep-forward' and
-`elcute--nxml-creep-backward' modify `xmltok-type' through
-`forward-sexp' and `backward-sexp', respectively."
-  (memq xmltok-type '(data comment)))
+Instead of moving full nodes, stop if `xmltok-type' is `'data'.  In nXML
+mode, `elcute--nxml-creep-forward' and `elcute--nxml-creep-backward'
+modify `xmltok-type' through `forward-sexp' and `backward-sexp',
+respectively."
+  (eq xmltok-type 'data))
 
 (defun elcute--context ()
   (syntax-ppss-context (syntax-ppss)))
