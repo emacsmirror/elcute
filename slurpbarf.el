@@ -107,7 +107,7 @@ see `global-slurpbarf-mode'."
 ;;;###autoload
 (define-globalized-minor-mode global-slurpbarf-mode
   slurpbarf-mode slurpbarf-mode
-  :require slurpbarf
+  :require 'slurpbarf
   :group 'convenience)
 
 (defvar slurpbarf-insert-space-flag t
