@@ -1,6 +1,6 @@
 ;;; slurpbarf.el --- Commands for slurping and barfing  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2023-2025 Vili Aapro
+;; Copyright (C) 2023-2026 Vili Aapro
 
 ;; Author: Vili Aapro
 ;; Keywords: convenience, lisp, XML
@@ -107,6 +107,7 @@ see `global-slurpbarf-mode'."
 ;;;###autoload
 (define-globalized-minor-mode global-slurpbarf-mode
   slurpbarf-mode slurpbarf-mode
+  :require slurpbarf
   :group 'convenience)
 
 (defvar slurpbarf-insert-space-flag t
