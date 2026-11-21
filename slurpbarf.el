@@ -90,13 +90,15 @@ into user errors."
 (define-minor-mode slurpbarf-mode
   "Toggle slurping and barfing (Slurpbarf mode) in the current buffer.
 
-When Slurpbarf mode is enabled, various buffer-local variables
-are set according to major mode, affecting the commands bound in
-the mode map, and the command `slurpbarf-splice'.
+When Slurpbarf mode is enabled, various buffer-local variables are set
+according to major mode, affecting the commands bound in
+`slurpbarf-mode-map', and the command `slurpbarf-splice'.
 
 Supported major modes are Lisp Data mode and nXML mode; in
 addition, the default Lisp Data behavior may be useful globally:
-see `global-slurpbarf-mode'."
+see `global-slurpbarf-mode'.
+
+\\{slurpbarf-mode-map}"
   :keymap (define-keymap
 	    "C-)" #'slurpbarf-slurp-forward
 	    "C-(" #'slurpbarf-slurp-backward
